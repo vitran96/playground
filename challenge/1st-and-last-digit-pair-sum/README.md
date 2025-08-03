@@ -1,6 +1,6 @@
 # First-and-Last Digit Pair Sum
 
-Company: OL
+Company: NAB
 
 ## Description
 

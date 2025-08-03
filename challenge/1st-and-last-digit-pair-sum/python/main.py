@@ -1,5 +1,5 @@
-def expand(str):
-    return 'none'
+def first_and_last_digit_pair_sum(arr):
+    return 0
 
 
 TEST_CASES = [

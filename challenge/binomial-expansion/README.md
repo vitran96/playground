@@ -1,6 +1,6 @@
 # Binomial Expansion
 
-Company: Nab
+Company: OL
 
 ## Description
 Write a function `expand(str)` that takes a string of exactly two simple binomials multiplied together—always of the form:

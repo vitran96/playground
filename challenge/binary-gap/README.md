@@ -1,6 +1,6 @@
 # BinaryGap
 
-Company: Nab (QA)
+Company: NAB (QA)
 
 ## Description
 

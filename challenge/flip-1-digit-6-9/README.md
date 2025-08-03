@@ -1,6 +1,6 @@
 # Flip One Digit (6 ⇔ 9)
 
-Company: OL
+Company: NAB
 
 ## Description
 
