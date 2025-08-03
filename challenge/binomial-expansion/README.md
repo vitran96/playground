@@ -1,5 +1,7 @@
 # Binomial Expansion
 
+Company: Nab
+
 ## Description
 Write a function `expand(str)` that takes a string of exactly two simple binomials multiplied together—always of the form:
 `(ax + b)(cx + d)`

@@ -1,5 +1,9 @@
 # Simple Network Rank
 
+Company: OL
+
+## Description
+
 Return the max number of roads of connected nodes in a network (including isolated nodes).
 
 Given:

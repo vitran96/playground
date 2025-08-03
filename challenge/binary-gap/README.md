@@ -1,5 +1,9 @@
 # BinaryGap
 
+Company: Nab (QA)
+
+## Description
+
 Find longest sequence of zeros in binary representation of an integer.
 
 ---

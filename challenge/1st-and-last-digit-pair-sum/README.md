@@ -1,5 +1,9 @@
 # First-and-Last Digit Pair Sum
 
+Company: OL
+
+## Description
+
 Given an array of positive two-digit integers, find the maximum sum you can get by picking two numbers that share the same first and last digit.  
 If no such pair exists, return `0`.
 

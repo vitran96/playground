@@ -1,4 +1,4 @@
 # Crane issue
 
-Company: Orange logic
+Company: OL
 Type: Graph
