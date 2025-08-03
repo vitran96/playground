@@ -76,6 +76,7 @@ def count_max_edge(node):
 
     return longest
 
+# Assume this is directed edge (edge with direction)
 def max_num_of_road(n, a, b):
     longest = 0
     nodes = {}
