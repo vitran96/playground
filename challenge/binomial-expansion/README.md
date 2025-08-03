@@ -15,3 +15,7 @@ expand("(2x+3)(4x-5)") → "8x^2+2x-15"
 
 expand("(-1x+2)(3x+4)") → "-3x^2+2x+8"
 ```
+
+## NOTES
+
+* There is no clear range of `a, b, c, d`
