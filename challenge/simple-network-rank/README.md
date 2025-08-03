@@ -8,7 +8,7 @@ Return the max number of roads of connected nodes in a network (including isolat
 
 Given:
 * N — number of nodes
-* A, B — edges from node A[i] to node B[i]
+* A, B — edges from node A[i] to node B[i]. Eg: A[0] connect to node at B[0]. A = [1, 2], B = [2, 3] mean 1 -> 2 -> 3
 
 Examples:
 
