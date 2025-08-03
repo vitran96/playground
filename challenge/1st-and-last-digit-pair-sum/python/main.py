@@ -10,15 +10,17 @@ TEST_CASES = [
 ]
 
 for case in TEST_CASES:
-    try:
-        result = False
-        _input = case['input']
-        expected = case['expected']
+    result = False
+    _input = case['input']
+    _str = _input['str']
+    n = _input['n']
 
-        actual = expand(_input)
+    expected = case['expected']
+    try:
+        actual = caesar(_str, n, TOKEN)
 
         result = expected == actual
 
-        print(expected, ' == ', actual, ' = ', result)
-    except e:
-        print('Error: ', e)
+        print(_input, ' -> ', expected, ' == ', actual, ' = ', result)
+    except Exception as e:
+        print(_input, ' -> ', 'Error: ', e)
