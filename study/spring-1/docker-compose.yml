@@ -1,0 +1,14 @@
+services:
+  mysql:
+    image: mysql:9.4.0-oraclelinux9
+    network_mode: host
+    environment:
+      - "MYSQL_ROOT_PASSWORD=pass1234"
+      - "MYSQL_DATABASE=spring_1"
+      - "MYSQL_USER=user1"
+      - "MYSQL_PASSWORD=pass1234"
+    volumes:
+      - "mysql-data:/var/lib/mysql"
+
+volumes:
+  mysql-data:
