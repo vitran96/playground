@@ -1,4 +1,4 @@
-package com.example.demo;
+package tech.kingoyster.spring-1;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.example.demo;
+package tech.kingoyster.spring-1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
