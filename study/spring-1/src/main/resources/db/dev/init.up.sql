@@ -1,0 +1,7 @@
+CREATE TABLE customers (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR NOT NULL,
+    email VARCHAR NOT NULL,
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+);
