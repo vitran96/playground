@@ -1,4 +1,14 @@
-# spring.application.name=demo
 spring:
   application:
     name: spring-1
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/demo_liquibase
+    url: ${DB_URL:-jdbc:mysql://localhost:3306/spring_1}
+    username: ${DB_USERNAME:-user1}
+    password: ${DB_PASSWORD:-pass1234}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:/db/${LIQUIBASE_FOLDER:-dev}/changelog.xml
+    enabled: ${LIQUIBASE_ENABLED:-true}

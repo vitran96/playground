@@ -1,4 +1,4 @@
-package tech.kingoyster.spring-1;
+package tech.kingoyster.spring_1;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
