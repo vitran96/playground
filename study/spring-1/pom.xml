@@ -28,6 +28,10 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <mysql.version>9.4.0</mysql.version>
+        <maven-jpa-gen.version>0.99.8</maven-jpa-gen.version>
+        <hibernate-tools.version>7.1.2.Final</hibernate-tools.version>
+        <template.dir>${project.basedir}/template</template.dir>
     </properties>
     <dependencies>
         <dependency>
@@ -69,6 +73,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
+            <version>${mysql.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -158,6 +163,28 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.hibernate.tool</groupId>
+                <artifactId>hibernate-tools-maven</artifactId>
+                <version>${hibernate-tools.version}</version>
+                <configuration>
+                    <propertyFile>${project.basedir}/hibernate.properties</propertyFile>
+                    <revengFile>${project.basedir}/hibernate.reveng.xml</revengFile>
+<!--                    <ejb3>true</ejb3>-->
+<!--                    <jdk5>true</jdk5>-->
+                    <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+                    <packageName>tech.kingoyster.spring_1.model</packageName>
+                    <templatePath>${template.dir}</templatePath>
+                </configuration>
+                <dependencies>
+                    <!-- DB Driver of your database -->
+                    <dependency>
+                        <groupId>com.mysql</groupId>
+                        <artifactId>mysql-connector-j</artifactId>
+                        <version>${mysql.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
