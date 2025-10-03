@@ -9,5 +9,5 @@ spring:
     hibernate:
       ddl-auto: none
   liquibase:
-    change-log: classpath:/db/${LIQUIBASE_FOLDER:prod}/changelog.xml
+    change-log: classpath:/db/${LIQUIBASE_FOLDER:dev}/changelog.xml
     enabled: ${LIQUIBASE_ENABLED:true}
