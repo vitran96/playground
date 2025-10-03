@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -15,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name="customers")
-public class Customers implements java.io.Serializable {
+public class Customer implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
