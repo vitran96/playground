@@ -1,7 +1,12 @@
 package tech.kingoyster.spring_1.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import tech.kingoyster.spring_1.exception.NotFoundException;
+import tech.kingoyster.spring_1.exception.UserAlreadyExistsException;
 import tech.kingoyster.spring_1.model.Customer;
 import tech.kingoyster.spring_1.repository.CustomerRepository;
 import tech.kingoyster.spring_1.service.ICustomerService;
@@ -20,17 +25,24 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public Optional<Customer> getById(Long id) {
-        return customerRepository.findById(id);
+    public Customer getById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User " + id + " not found!"));
     }
 
     @Override
     public Customer create(Customer customer) {
-        return customerRepository.save(customer);
+        try {
+            return customerRepository.save(customer);
+        } catch (DataIntegrityViolationException e) {
+            throw new UserAlreadyExistsException(e);
+        }
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+        this.getById(id);
         customerRepository.deleteById(id);
     }
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface ICustomerService {
     List<Customer> getAll();
 
-    Optional<Customer> getById(Long id);
+    Customer getById(Long id);
 
     Customer create(Customer customer);
 
