@@ -21,11 +21,6 @@ public class CustomerServiceTest {
     @Mock
     private CustomerRepository customerRepository;
 
-//    @Before
-//    public void setup() {
-//        MockitoAnnotations.openMocks(this);
-//    }
-
     @Test
     public void returnEmptyListOfUser() {
         Mockito.when(customerRepository.findAll()).thenReturn(List.of());
