@@ -1,9 +1,6 @@
-package tech.kingoyster.spring_1.service;
-
-import tech.kingoyster.spring_1.model.Customer;
+package tech.kingoyster.spring_1.customer;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ICustomerService {
     List<Customer> getAll();

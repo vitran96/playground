@@ -1,23 +1,21 @@
-package tech.kingoyster.spring_1.service.impl;
+package tech.kingoyster.spring_1.customer.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import tech.kingoyster.spring_1.exception.NotFoundException;
-import tech.kingoyster.spring_1.exception.UserAlreadyExistsException;
-import tech.kingoyster.spring_1.model.Customer;
-import tech.kingoyster.spring_1.repository.CustomerRepository;
-import tech.kingoyster.spring_1.service.ICustomerService;
+import tech.kingoyster.spring_1.exception.CustomerAlreadyExistsException;
+import tech.kingoyster.spring_1.customer.Customer;
+import tech.kingoyster.spring_1.customer.ICustomerRepository;
+import tech.kingoyster.spring_1.customer.ICustomerService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements ICustomerService {
-    private final CustomerRepository customerRepository;
+    private final ICustomerRepository customerRepository;
 
     @Override
     public List<Customer> getAll() {
@@ -35,7 +33,7 @@ public class CustomerServiceImpl implements ICustomerService {
         try {
             return customerRepository.save(customer);
         } catch (DataIntegrityViolationException e) {
-            throw new UserAlreadyExistsException(e);
+            throw new CustomerAlreadyExistsException(e);
         }
     }
 

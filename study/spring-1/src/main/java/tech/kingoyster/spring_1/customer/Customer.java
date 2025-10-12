@@ -1,4 +1,4 @@
-package tech.kingoyster.spring_1.model;
+package tech.kingoyster.spring_1.customer;
 
 import jakarta.persistence.*;
 import lombok.*;
