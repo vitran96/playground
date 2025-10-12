@@ -10,7 +10,7 @@ import java.util.List;
 @RequestMapping("/api/v1/customers")
 @RequiredArgsConstructor
 public class CustomerController {
-    private final ICustomerService customerService;
+    private final CustomerService customerService;
 
     @GetMapping
     public List<Customer> getAll() {
