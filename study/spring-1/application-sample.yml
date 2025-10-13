@@ -11,3 +11,9 @@ spring:
   liquibase:
     change-log: classpath:/db/${LIQUIBASE_FOLDER:dev}/changelog.xml
     enabled: ${LIQUIBASE_ENABLED:true}
+
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGERUI_ENABLED:true}
+  api-docs:
+    enabled: ${APIDOC_ENABLED:true}
