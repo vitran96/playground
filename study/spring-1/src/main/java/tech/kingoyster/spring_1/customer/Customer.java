@@ -8,12 +8,12 @@ import org.hibernate.annotations.Generated;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="customers")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table(name="customers")
 public class Customer implements java.io.Serializable {
 
     @Id

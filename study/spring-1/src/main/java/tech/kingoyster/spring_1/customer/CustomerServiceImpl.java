@@ -1,4 +1,4 @@
-package tech.kingoyster.spring_1.customer.impl;
+package tech.kingoyster.spring_1.customer;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -6,9 +6,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import tech.kingoyster.spring_1.exception.NotFoundException;
 import tech.kingoyster.spring_1.exception.CustomerAlreadyExistsException;
-import tech.kingoyster.spring_1.customer.Customer;
-import tech.kingoyster.spring_1.customer.CustomerRepository;
-import tech.kingoyster.spring_1.customer.CustomerService;
 
 import java.util.List;
 

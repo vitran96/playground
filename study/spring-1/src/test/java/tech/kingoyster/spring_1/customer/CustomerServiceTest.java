@@ -10,12 +10,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
-import tech.kingoyster.spring_1.customer.impl.CustomerServiceImpl;
 import tech.kingoyster.spring_1.exception.CustomerAlreadyExistsException;
 import tech.kingoyster.spring_1.exception.NotFoundException;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
