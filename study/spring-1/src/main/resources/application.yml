@@ -21,3 +21,9 @@ springdoc:
   show-login-endpoint: ${API_SHOW_LOGIN:false}
   enable-spring-security: ${API_ENABLE_SPRING_SECURITY:false}
   show-oauth2-endpoints: ${API_SHOW_OAUTH2:false}
+
+app:
+  admin:
+    email: ${ADMIN_EMAIL:admin@gmail.com}
+    fullName: ${ADMIN_FULLNAME:admin}
+    password: ${ADMIN_PASSWORD:admin@1234}
