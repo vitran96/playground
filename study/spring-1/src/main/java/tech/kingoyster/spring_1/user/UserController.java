@@ -1,7 +1,6 @@
 package tech.kingoyster.spring_1.user;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,28 +15,29 @@ public class UserController {
 
     @GetMapping
     public List<UserSummary> getAll() {
-        throw new NotImplementedException();
+        return userService.getAll();
     }
 
     @GetMapping("/{id}")
     public UserSummary getById(Long id) {
-        throw new NotImplementedException();
+        return userService.getById(id);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public User create(UserCreateDto userCreateDto) {
-        throw new NotImplementedException();
+        return userService.create(userCreateDto);
     }
 
     @PatchMapping("/{id}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePassword(UserPasswordDto userPasswordDto) {
-        throw new NotImplementedException();
+    public void updatePassword(Long id, UserPasswordDto userPasswordDto) {
+        userService.updatePassword(id, userPasswordDto);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(Long id) {
-        throw new NotImplementedException();
+        userService.deleteById(id);
     }
 }

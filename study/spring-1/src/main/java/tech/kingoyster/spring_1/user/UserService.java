@@ -7,7 +7,7 @@ public interface UserService {
     List<UserSummary> getAll();
     UserSummary getById(Long id);
     User create(UserCreateDto user);
-    void updatePassword(UserPasswordDto userDto);
+    void updatePassword(Long id, UserPasswordDto userDto);
 
-    UserSummary deleteById(Long id);
+    void deleteById(Long id);
 }

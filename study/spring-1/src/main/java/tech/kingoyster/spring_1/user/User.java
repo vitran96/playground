@@ -2,10 +2,10 @@ package tech.kingoyster.spring_1.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class User {
 
     @Id
@@ -29,4 +30,10 @@ public class User {
     @Column(name = "hashed_password", nullable = false)
     @JsonIgnore
     private String hashedPassword;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @org.hibernate.annotations.Generated
+    @Column(name = "registered_at", insertable = false, updatable = false, length = 19)
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    private LocalDateTime registeredAt;
 }

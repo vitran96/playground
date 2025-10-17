@@ -12,4 +12,12 @@
                      relativeToChangelogFile="true" stripComments="true" splitStatements="false"/>
         </rollback>
     </changeSet>
+    <changeSet author="vitran96" id="create-user" context="spring-1" labels="dev">
+        <sqlFile path="create-user.up.sql"
+                 relativeToChangelogFile="true" stripComments="true" splitStatements="false"/>
+        <rollback>
+            <sqlFile path="create-user.down.sql"
+                     relativeToChangelogFile="true" stripComments="true" splitStatements="false"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
