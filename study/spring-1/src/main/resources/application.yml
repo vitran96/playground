@@ -20,3 +20,4 @@ springdoc:
   show-actuator: ${API_SHOW_ACTUATOR:false}
   show-login-endpoint: ${API_SHOW_LOGIN:false}
   enable-spring-security: ${API_ENABLE_SPRING_SECURITY:false}
+  show-oauth2-endpoints: ${API_SHOW_OAUTH2:false}
