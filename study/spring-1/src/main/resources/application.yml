@@ -18,3 +18,4 @@ springdoc:
   api-docs:
     enabled: ${APIDOC_ENABLED:false}
   show-actuator: ${API_SHOW_ACTUATOR:false}
+  show-login-endpoint: ${API_SHOW_LOGIN:false}
