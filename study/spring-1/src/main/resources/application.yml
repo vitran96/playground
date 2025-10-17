@@ -17,4 +17,4 @@ springdoc:
     enabled: ${SWAGGERUI_ENABLED:false}
   api-docs:
     enabled: ${APIDOC_ENABLED:false}
-  show-actuator: true
+  show-actuator: ${API_SHOW_ACTUATOR:false}
