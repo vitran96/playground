@@ -19,3 +19,4 @@ springdoc:
     enabled: ${APIDOC_ENABLED:false}
   show-actuator: ${API_SHOW_ACTUATOR:false}
   show-login-endpoint: ${API_SHOW_LOGIN:false}
+  enable-spring-security: ${API_ENABLE_SPRING_SECURITY:false}

@@ -19,3 +19,4 @@ springdoc:
     enabled: true
   show-actuator: true
   show-login-endpoint: true
+  enable-spring-security: true
