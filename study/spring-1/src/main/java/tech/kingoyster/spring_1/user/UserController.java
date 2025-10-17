@@ -1,13 +1,13 @@
 package tech.kingoyster.spring_1.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
@@ -19,25 +19,27 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserSummary getById(Long id) {
+    public UserSummary getById(@PathVariable Long id) {
         return userService.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(UserCreateDto userCreateDto) {
+    public User create(
+            @RequestBody @Valid UserCreateDto userCreateDto
+    ) {
         return userService.create(userCreateDto);
     }
 
     @PatchMapping("/{id}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePassword(Long id, UserPasswordDto userPasswordDto) {
+    public void updatePassword(@PathVariable Long id, @RequestBody @Valid UserPasswordDto userPasswordDto) {
         userService.updatePassword(id, userPasswordDto);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(Long id) {
+    public void deleteById(@PathVariable Long id) {
         userService.deleteById(id);
     }
 }

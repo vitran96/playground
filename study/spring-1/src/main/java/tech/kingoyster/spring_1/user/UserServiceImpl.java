@@ -1,5 +1,6 @@
 package tech.kingoyster.spring_1.user;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,12 +38,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
     @Override
     public void updatePassword(Long id, UserPasswordDto userDto) {
         getById(id);
         userRepository.updatePassword(id, passwordEncoder.encode(userDto.getPassword()));
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
         getById(id);
