@@ -6,6 +6,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class InitAdmin {
@@ -15,6 +17,24 @@ public class InitAdmin {
 
     @EventListener(ApplicationReadyEvent.class)
     void initAdmin() {
-        // Find if any user with email existed.
+        try {
+            Optional<UserSummary> admin = userRepository.findOneByEmail(adminConfiguration.getEmail());
+            if (admin.isPresent()) {
+                return;
+            }
+
+            userRepository.save(
+                    User.builder()
+                            .email(adminConfiguration.getEmail())
+                            .fullName(adminConfiguration.getFullName())
+                            .hashedPassword(
+                                    passwordEncoder.encode(adminConfiguration.getPassword())
+                            )
+                            .build()
+            );
+        } catch (Exception e) {
+            // TODO: add logger
+            System.out.println("Failed to create admin account: " + e.getMessage());
+        }
     }
 }

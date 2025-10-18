@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "app.admin")
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class AdminConfiguration {

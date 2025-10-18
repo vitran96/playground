@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     List<UserSummary> findAllProjectedBy();
     Optional<UserSummary> findProjectedById(Long id);
+    Optional<UserSummary> findOneByEmail(String email);
 
     @Modifying
     @Query("UPDATE User u SET u.hashedPassword = :hashedPassword WHERE u.id = :id")
