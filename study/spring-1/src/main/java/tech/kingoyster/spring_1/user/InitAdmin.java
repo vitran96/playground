@@ -18,7 +18,7 @@ public class InitAdmin {
     @EventListener(ApplicationReadyEvent.class)
     void initAdmin() {
         try {
-            Optional<UserSummary> admin = userRepository.findOneByEmail(adminConfiguration.getEmail());
+            Optional<UserSummary> admin = userRepository.findOneProjectedByEmail(adminConfiguration.getEmail());
             if (admin.isPresent()) {
                 return;
             }

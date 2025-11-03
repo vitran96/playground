@@ -1,5 +1,6 @@
 package tech.kingoyster.spring_1;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -18,13 +19,17 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.*;
+import tech.kingoyster.spring_1.authentication.CustomUserDetailsService;
+import tech.kingoyster.spring_1.user.UserService;
 
 import java.util.List;
 
+@Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
@@ -37,6 +42,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // NOTE: this allow create internal only API.
                         // TODO: But how about internal between service?
+//                                       "/swagger-ui.html",
+//                                       "/swagger-ui/*",
+//                                       "/v3/api-docs",
+//                                       "/v3/api-docs/swagger-config"
 //                        .requestMatchers("/internal/**").denyAll()
 //                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
@@ -55,28 +64,12 @@ public class SecurityConfig {
                         })
                 );
 
-        // NOTE: this is for H2 console frame
-//        http.headers(
-//                headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-//        );
-
         return http.build();
     }
 
-    // TODO: replace this with service to interact with User table in DB
     @Bean
-    UserDetailsService users(PasswordEncoder encoder) {
-        UserDetails admin = User.withUsername("admin")
-                .password(encoder.encode("Admin@123"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user = User.withUsername("user")
-                .password(encoder.encode("User@123"))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
+    UserDetailsService users() {
+        return customUserDetailsService;
     }
 
     @Bean
