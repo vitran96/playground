@@ -10,17 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.*;
-import tech.kingoyster.spring_1.authentication.CustomUserDetailsService;
-import tech.kingoyster.spring_1.user.UserService;
 
 import java.util.List;
 
@@ -29,8 +24,6 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomUserDetailsService customUserDetailsService;
-
     @Bean
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
         http
@@ -40,18 +33,17 @@ public class SecurityConfig {
                 .requestCache(RequestCacheConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        // NOTE: this allow create internal only API.
-                        // TODO: But how about internal between service?
-//                                       "/swagger-ui.html",
-//                                       "/swagger-ui/*",
-//                                       "/v3/api-docs",
-//                                       "/v3/api-docs/swagger-config"
-//                        .requestMatchers("/internal/**").denyAll()
-//                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                               "/swagger-ui.html",
+                               "/swagger-ui/*",
+                               "/v3/api-docs",
+                               "/v3/api-docs/swagger-config",
+                               "/api/v1/auth/login"
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
                 // NOTE: basic auth is now (simple), no "formLogin()" -> no redirect
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex -> ex
                         // NOTE: return 401
                         // TODO: consider different way to align with central ErrorResponse
@@ -65,11 +57,6 @@ public class SecurityConfig {
                 );
 
         return http.build();
-    }
-
-    @Bean
-    UserDetailsService users() {
-        return customUserDetailsService;
     }
 
     @Bean
