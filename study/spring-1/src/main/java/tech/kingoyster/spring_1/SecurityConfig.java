@@ -10,12 +10,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.*;
+import tech.kingoyster.spring_1.authentication.AccessTokenFilter;
 
 import java.util.List;
 
@@ -24,13 +25,17 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final AccessTokenFilter accessTokenFilter;
+
     @Bean
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
         http
-                // NOTE: why disable for REST?
+                // TODO: split and re-enable this
                 .csrf(AbstractHttpConfigurer::disable)
                 // NOTE: why does this affect redirect?
                 .requestCache(RequestCacheConfigurer::disable)
+                // TODO: better split this config
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -44,6 +49,8 @@ public class SecurityConfig {
                 )
                 // NOTE: basic auth is now (simple), no "formLogin()" -> no redirect
                 .httpBasic(AbstractHttpConfigurer::disable)
+                // NOTE: better add intercepter here to leverage Spring-security auth matcher
+                .addFilterBefore(accessTokenFilter, BasicAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         // NOTE: return 401
                         // TODO: consider different way to align with central ErrorResponse
