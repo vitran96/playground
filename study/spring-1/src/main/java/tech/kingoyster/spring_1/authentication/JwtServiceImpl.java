@@ -13,4 +13,19 @@ public class JwtServiceImpl implements JwtService {
     ) {
         this.secret = secret;
     }
+
+    @Override
+    public boolean isExpired(String token) {
+        return false;
+    }
+
+    @Override
+    public String generateAccessToken(UserTokenData userTokenData, long expiry) {
+        return "";
+    }
+
+    @Override
+    public String generateRefreshToken(long expiry) {
+        return "";
+    }
 }

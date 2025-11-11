@@ -9,6 +9,10 @@ import tech.kingoyster.spring_1.user.UserRepository;
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    
-    
+
+
+    @Override
+    public LoginResponse authenticate(LoginRequest loginRequest) {
+        return null;
+    }
 }
