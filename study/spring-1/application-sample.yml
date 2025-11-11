@@ -27,3 +27,7 @@ app:
     email: admin@gmail.com
     fullName: admin
     password: admin@1234
+  jwt:
+    secret: VxRfBGJFviiO62cg/M0YY5WypcyvtUUjfkI5aDJgwt4dLz6BQKuaKChKyn+Ulhz+
+  cookie:
+    secure: false

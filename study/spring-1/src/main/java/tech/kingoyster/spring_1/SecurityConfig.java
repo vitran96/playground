@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.*;
 import tech.kingoyster.spring_1.authentication.AccessTokenFilter;
 
@@ -31,27 +31,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
         http
-                // TODO: split and re-enable this
-                .csrf(AbstractHttpConfigurer::disable)
-                // NOTE: why does this affect redirect?
-                .requestCache(RequestCacheConfigurer::disable)
-                // TODO: better split this config
-                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                "/swagger-ui.html",
                                "/swagger-ui/*",
                                "/v3/api-docs",
                                "/v3/api-docs/swagger-config",
+                               "/actuator",
+                               "/actuator/*",
                                "/api/v1/auth/login",
                                "/api/v1/dummies/say-hi"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/*").authenticated()
+                        .anyRequest().permitAll()
+//                       .anyRequest().authenticated()
                 )
+                // TODO: split and re-enable this
+                .csrf(AbstractHttpConfigurer::disable)
+                // NOTE: why does this affect redirect?
+                .requestCache(RequestCacheConfigurer::disable)
+                // TODO: better split this config
+                .cors(Customizer.withDefaults())
                 // NOTE: basic auth is now (simple), no "formLogin()" -> no redirect
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // NOTE: better add intercepter here to leverage Spring-security auth matcher
-                .addFilterBefore(accessTokenFilter, BasicAuthenticationFilter.class)
+                // NOTE: better add interceptor here to leverage Spring-security auth matcher
                 .exceptionHandling(ex -> ex
                         // NOTE: return 401
                         // TODO: consider different way to align with central ErrorResponse
@@ -62,7 +65,8 @@ public class SecurityConfig {
                             response.setContentType("application/json");
                             response.getWriter().write("{\"error\":\"forbidden\"}");
                         })
-                );
+                )
+                .addFilterBefore(accessTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

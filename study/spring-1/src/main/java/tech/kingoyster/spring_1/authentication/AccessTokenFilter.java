@@ -5,6 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,17 +18,29 @@ import java.rmi.RemoteException;
 @RequiredArgsConstructor
 public class AccessTokenFilter extends OncePerRequestFilter {
 
+    private static final String AUTH_PREFIX = "Bearer ";
+
+    private final JwtProvider jwtProvider;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
-        if (authorization == null) {
-            System.out.println("No Authorization header");
-            throw new RemoteException("Not authorized");
+//        SecurityContextHolder.getContext().
+        String accessToken = extractToken(request.getHeader("Authorization"));
+        if (StringUtils.isNotEmpty(accessToken)) {
+            Authentication authentication = jwtProvider.getAuthentication(accessToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        System.out.println("Has Authorization header");
         filterChain.doFilter(request, response);
+    }
+
+    private String extractToken(String fullBearerToken) {
+        if (StringUtils.startsWith(fullBearerToken, AUTH_PREFIX)) {
+            return StringUtils.removeStart(fullBearerToken, AUTH_PREFIX);
+        }
+
+        return null;
     }
 }
