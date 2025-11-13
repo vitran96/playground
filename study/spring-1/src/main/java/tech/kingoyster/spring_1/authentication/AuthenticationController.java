@@ -1,5 +1,6 @@
 package tech.kingoyster.spring_1.authentication;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,12 +37,14 @@ public class AuthenticationController {
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @SecurityRequirement(name = "bearerAuth")
     public void logout(HttpServletResponse response) {
         Cookie removeCookie = cookieService.removeCookie(REFRESH_TOKEN_COOKIE_NAME);
         response.addCookie(removeCookie);
     }
 
     @PostMapping("/refresh")
+    @SecurityRequirement(name = "bearerAuth")
     public RefreshDto refresh(
             @CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             @RequestBody RefreshDto refreshRequest) {
@@ -50,7 +53,5 @@ public class AuthenticationController {
         }
 
         return authenticationService.refreshToken(refreshToken, refreshRequest.accessToken());
-
-
     }
 }

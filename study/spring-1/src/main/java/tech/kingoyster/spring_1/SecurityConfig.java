@@ -32,17 +32,18 @@ public class SecurityConfig {
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        // NOTE: this way, I can guarantee route like SPA route won't be blocked
                         .requestMatchers(
-                               "/swagger-ui.html",
-                               "/swagger-ui/*",
-                               "/v3/api-docs",
-                               "/v3/api-docs/swagger-config",
-                               "/actuator",
-                               "/actuator/*",
+//                               "/swagger-ui.html",
+//                               "/swagger-ui/*",
+//                               "/v3/api-docs",
+//                               "/v3/api-docs/swagger-config",
+//                               "/actuator",
+//                               "/actuator/*",
                                "/api/v1/auth/login",
                                "/api/v1/dummies/say-hi"
                         ).permitAll()
-                        .requestMatchers("/api/*").authenticated()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
 //                       .anyRequest().authenticated()
                 )

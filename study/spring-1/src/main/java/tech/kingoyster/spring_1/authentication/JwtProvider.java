@@ -62,16 +62,7 @@ public class JwtProvider {
         return JWT.decode(token);
     }
 
-    private String generateToken(int expiry, Integer userId) {
-        if (Objects.isNull(userId)) {
-            String str = null;
-            return generateToken(expiry, str);
-        }
-
-        return generateToken(expiry, Integer.toString(userId));
-    }
-
-    private String generateToken(int expiry, String userId) {
+    private String generateToken(int expiry, String subject) {
         Instant now = Instant.now();
         Algorithm algorithm = Algorithm.HMAC512(secret);
         JWTCreator.Builder builder = JWT.create()
@@ -79,9 +70,9 @@ public class JwtProvider {
                 .withIssuedAt(now)
                 .withExpiresAt(now.plusMillis(expiry));
 
-        if (Objects.nonNull(userId)) {
+        if (Objects.nonNull(subject)) {
             builder = builder
-                    .withSubject(userId);
+                    .withSubject(subject);
         }
 
         return builder.sign(algorithm);
@@ -90,10 +81,6 @@ public class JwtProvider {
     private String generateToken(int expiry) {
         String str = null;
         return generateToken(expiry, str);
-    }
-
-    public String generateAccessToken(tech.kingoyster.spring_1.user.User user) {
-        return generateAccessToken(Integer.toString(user.getId()));
     }
 
     public String generateAccessToken(String idStr) {

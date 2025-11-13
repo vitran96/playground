@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         String refreshToken = jwtProvider.generateRefreshToken();
-        String accessToken = jwtProvider.generateAccessToken(user);
+        String accessToken = jwtProvider.generateAccessToken(user.getId().toString());
 
         return LoginResponse.builder()
                 .refreshToken(refreshToken)
