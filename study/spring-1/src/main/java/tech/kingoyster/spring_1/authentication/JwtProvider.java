@@ -41,6 +41,8 @@ public class JwtProvider {
 
         UserDetails principal = User.builder()
                 .username(subject)
+                // Password cannot be null
+                .password("")
                 .build();
         return UsernamePasswordAuthenticationToken.authenticated(
                 principal,
