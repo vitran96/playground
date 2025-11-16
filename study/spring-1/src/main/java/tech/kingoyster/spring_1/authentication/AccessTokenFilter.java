@@ -1,5 +1,7 @@
 package tech.kingoyster.spring_1.authentication;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,14 +28,21 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-//        SecurityContextHolder.getContext().
         String accessToken = extractToken(request.getHeader("Authorization"));
         if (StringUtils.isNotEmpty(accessToken)) {
-            Authentication authentication = jwtProvider.getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            validateAccessToken(request, accessToken);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void validateAccessToken(HttpServletRequest request, String accessToken) {
+        try {
+            Authentication authentication = jwtProvider.getAuthentication(accessToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (JWTVerificationException e) {
+            request.setAttribute("authException", e);
+        }
     }
 
     private String extractToken(String fullBearerToken) {
