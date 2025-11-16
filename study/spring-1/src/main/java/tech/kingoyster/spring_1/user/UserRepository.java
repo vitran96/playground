@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     List<UserSummary> findAllProjectedBy();
-    Optional<UserSummary> findProjectedById(Long id);
+    Optional<UserSummary> findProjectedById(Integer id);
     Optional<UserSummary> findOneProjectedByEmail(String email);
 
     Optional<User> findOneByEmail(String email);
@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u SET u.hashedPassword = :hashedPassword WHERE u.id = :id")
     void updatePassword(
-            @Param("id") Long id,
+            @Param("id") Integer id,
             @Param("hashedPassword") String hashedPassword
     );
 }

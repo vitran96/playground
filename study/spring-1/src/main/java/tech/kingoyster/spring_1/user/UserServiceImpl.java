@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserSummary getById(Long id) {
+    public UserSummary getById(Integer id) {
         return userRepository.findProjectedById(id)
                 .orElseThrow(() -> new NotFoundException("User " + id + " not found!"));
     }
@@ -40,14 +40,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updatePassword(Long id, UserPasswordDto userDto) {
+    public void updatePassword(Integer id, UserPasswordDto userDto) {
         getById(id);
         userRepository.updatePassword(id, passwordEncoder.encode(userDto.getPassword()));
     }
 
     @Transactional
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         getById(id);
         userRepository.deleteById(id);
     }

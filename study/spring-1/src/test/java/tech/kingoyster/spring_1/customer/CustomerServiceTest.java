@@ -64,23 +64,23 @@ public class CustomerServiceTest {
         Assertions.assertEquals("customer2@gmail.com", list.get(1).getEmail());
     }
 
-    static Stream<Long> randomNumbers() {
+    static Stream<Integer> randomNumbers() {
         Random random = new Random();
-        return Stream.generate(() -> random.nextLong(100)) // Generate random integers up to 99
+        return Stream.generate(() -> random.nextInt(100)) // Generate random integers up to 99
                 .limit(10); // Generate 10 random numbers
     }
 
     @ParameterizedTest
     @MethodSource("randomNumbers")
-    public void getNonExistsCustomer(long randomId) {
-        Mockito.when(customerRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+    public void getNonExistsCustomer(int randomId) {
+        Mockito.when(customerRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(NotFoundException.class, () -> customerService.getById(randomId));
     }
 
     @Test
     public void get1Customer() {
-        Mockito.when(customerRepository.findById(Mockito.anyLong()))
+        Mockito.when(customerRepository.findById(Mockito.anyInt()))
                 .thenReturn(
                         Optional.of(
                                 new Customer(
@@ -92,7 +92,7 @@ public class CustomerServiceTest {
                         )
                 );
 
-        Customer customer = customerService.getById(5L);
+        Customer customer = customerService.getById(5);
 
         Assertions.assertEquals(5, customer.getId());
         Assertions.assertEquals("customer5", customer.getName());
@@ -137,8 +137,8 @@ public class CustomerServiceTest {
 
     @ParameterizedTest
     @MethodSource("randomNumbers")
-    public void delete1Customer(long randomId) {
-        Mockito.when(customerRepository.findById(Mockito.anyLong()))
+    public void delete1Customer(int randomId) {
+        Mockito.when(customerRepository.findById(Mockito.anyInt()))
                 .thenReturn(
                         Optional.of(
                                 new Customer(
@@ -152,13 +152,13 @@ public class CustomerServiceTest {
 
         customerService.deleteById(randomId);
 
-        Mockito.verify(customerRepository, Mockito.times(1)).deleteById(Mockito.anyLong());
+        Mockito.verify(customerRepository, Mockito.times(1)).deleteById(Mockito.anyInt());
     }
 
     @ParameterizedTest
     @MethodSource("randomNumbers")
-    public void deleteNonExistsCustomer(long randomId) {
-        Mockito.when(customerRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+    public void deleteNonExistsCustomer(int randomId) {
+        Mockito.when(customerRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(NotFoundException.class, () -> customerService.deleteById(randomId));
     }

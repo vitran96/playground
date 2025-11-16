@@ -5,9 +5,9 @@ import java.util.List;
 public interface UserService {
 
     List<UserSummary> getAll();
-    UserSummary getById(Long id);
+    UserSummary getById(Integer id);
     User create(UserCreateDto user);
-    void updatePassword(Long id, UserPasswordDto userDto);
+    void updatePassword(Integer id, UserPasswordDto userDto);
 
-    void deleteById(Long id);
+    void deleteById(Integer id);
 }

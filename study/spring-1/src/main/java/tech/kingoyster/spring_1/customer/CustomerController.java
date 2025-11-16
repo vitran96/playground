@@ -20,7 +20,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public Customer getById(@PathVariable Long id) {
+    public Customer getById(@PathVariable Integer id) {
         return customerService.getById(id);
     }
 
@@ -32,7 +32,7 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public void deleteById(@PathVariable Integer id) {
         customerService.deleteById(id);
     }
 }

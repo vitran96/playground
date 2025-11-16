@@ -20,7 +20,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getById(Long id) {
+    public Customer getById(Integer id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Customer " + id + " not found!"));
     }
@@ -36,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         this.getById(id);
         customerRepository.deleteById(id);
     }

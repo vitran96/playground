@@ -21,7 +21,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserSummary getById(@PathVariable Long id) {
+    public UserSummary getById(@PathVariable Integer id) {
         return userService.getById(id);
     }
 
@@ -35,13 +35,13 @@ public class UserController {
 
     @PatchMapping("/{id}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePassword(@PathVariable Long id, @RequestBody @Valid UserPasswordDto userPasswordDto) {
+    public void updatePassword(@PathVariable Integer id, @RequestBody @Valid UserPasswordDto userPasswordDto) {
         userService.updatePassword(id, userPasswordDto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public void deleteById(@PathVariable Integer id) {
         userService.deleteById(id);
     }
 }
