@@ -29,8 +29,8 @@ app:
     password: ${ADMIN_PASSWORD:admin@1234}
   jwt:
     refresh:
-      expiry: 300000
-    access:
       expiry: 86400000
+    access:
+      expiry: 300000
   cookie:
     secure: true
