@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.*;
 import tech.kingoyster.spring_1.authentication.AccessTokenFilter;
+import tech.kingoyster.spring_1.authentication.CustomAccessDeniedHandler;
+import tech.kingoyster.spring_1.authentication.CustomAuthenticationEntryPoint;
 
 import java.util.List;
 
@@ -27,6 +29,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final AccessTokenFilter accessTokenFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
@@ -50,15 +54,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 // NOTE: better add interceptor here to leverage Spring-security auth matcher
                 .exceptionHandling(ex -> ex
-                        // NOTE: return 401
-                        // TODO: consider different way to align with central ErrorResponse
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            // TODO: why do it this way??
-                            response.setStatus(HttpStatus.FORBIDDEN.value());
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"error\":\"forbidden\"}");
-                        })
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .addFilterBefore(accessTokenFilter, UsernamePasswordAuthenticationFilter.class);
 

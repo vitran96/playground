@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 public class AccessTokenFilter extends OncePerRequestFilter {
 
     private static final String AUTH_PREFIX = "Bearer ";
+    public static final String AUTH_EXCEPTION_ATTRIBUTE = "authException";
 
     private final JwtProvider jwtProvider;
 
@@ -41,7 +42,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             Authentication authentication = jwtProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (JWTVerificationException e) {
-            request.setAttribute("authException", e);
+            request.setAttribute(AUTH_EXCEPTION_ATTRIBUTE, e);
         }
     }
 

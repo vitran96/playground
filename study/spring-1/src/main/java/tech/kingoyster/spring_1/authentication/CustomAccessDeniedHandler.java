@@ -1,20 +1,39 @@
 package tech.kingoyster.spring_1.authentication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import tech.kingoyster.spring_1.HttpMediaType;
+import tech.kingoyster.spring_1.exception.ErrorDetail;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+    private final ObjectMapper objectMapper;
+
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        var errorDetail = new ErrorDetail(
+                LocalDateTime.now(),
+                1,
+                accessDeniedException.getMessage(),
+                request.getServletPath(),
+                null
+        );
 
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setContentType(HttpMediaType.APP_JSON.getValue());
+        response.getWriter().write(objectMapper.writeValueAsString(errorDetail));
     }
 }
