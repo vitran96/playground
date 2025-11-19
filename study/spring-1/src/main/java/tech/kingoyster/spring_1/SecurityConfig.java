@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 // NOTE: basic auth is now (simple), no "formLogin()" -> no redirect
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // NOTE: better add interceptor here to leverage Spring-security auth matcher
+                // Override Spring Security error handling for custom ErrorDetail
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
