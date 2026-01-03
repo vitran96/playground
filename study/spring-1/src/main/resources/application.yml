@@ -11,16 +11,41 @@ spring:
   liquibase:
     change-log: classpath:/db/${LIQUIBASE_FOLDER:prod}/changelog.xml
     enabled: ${LIQUIBASE_ENABLED:true}
+#  flyway:
+#    enabled: true
+#    baseline-on-migrate: false
+#    locations: classpath:db
+#    clean-disabled: true
 
 springdoc:
   swagger-ui:
     enabled: ${SWAGGERUI_ENABLED:false}
+#    path: /api/docs/swagger-ui.html
   api-docs:
     enabled: ${APIDOC_ENABLED:false}
+#    path: /api/docs/swagger.yaml
   show-actuator: ${API_SHOW_ACTUATOR:false}
   show-login-endpoint: ${API_SHOW_LOGIN:false}
   enable-spring-security: ${API_ENABLE_SPRING_SECURITY:false}
   show-oauth2-endpoints: ${API_SHOW_OAUTH2:false}
+
+# https://docs.spring.io/spring-boot/appendix/application-properties/index.html
+management:
+#  server:
+#    port: 8888
+#    address:
+  endpoints:
+    web:
+#      base-path: /api/actuator
+      exposure:
+#        By default, only [health, info]. use "*" if want all.
+#        include: "*"
+#        exclude:
+#    jmx:
+#      exposure:
+#        include:
+#        exclude:
+#    enabled-by-default: true
 
 app:
   admin:
