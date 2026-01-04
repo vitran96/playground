@@ -38,8 +38,11 @@ management:
     web:
 #      base-path: /api/actuator
       exposure:
-#        By default, only [health, info]. use "*" if want all.
-#        include: "*"
+#        By default, only [health]. use "*" if want all.
+        include:
+          - health
+          - metrics
+          - info
 #        exclude:
 #    jmx:
 #      exposure:
