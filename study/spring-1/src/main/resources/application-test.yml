@@ -1,0 +1,20 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:/db/dev/changelog.xml
+    enabled: true
+
+app:
+  admin:
+    email: admin@gmail.com
+    fullName: admin
+    password: admin@1234
+  jwt:
+    refresh:
+      expiry: 86400000
+    access:
+      expiry: 300000
+  cookie:
+    secure: false
