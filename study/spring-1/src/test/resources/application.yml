@@ -6,6 +6,16 @@ spring:
     change-log: classpath:/db/dev/changelog.xml
     enabled: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - metrics
+          # NOTE: must enable or else InfoWebEndpoint will fail
+          - info
+
 app:
   admin:
     email: admin@gmail.com
