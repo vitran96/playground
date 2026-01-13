@@ -28,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new UserNotAuthenticatedException("User username or password is not correct!");
         }
 
-        String refreshToken = jwtProvider.generateRefreshToken();
+        String refreshToken = jwtProvider.generateRefreshToken(user.getId().toString());
         String accessToken = jwtProvider.generateAccessToken(user.getId().toString());
 
         return LoginResponse.builder()
@@ -38,12 +38,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public RefreshDto refreshToken(String refreshToken, String accessToken) {
+    public RefreshDto refreshToken(String refreshToken) {
         if (!canRefresh(refreshToken)) {
             throw new NotAuthenticatedException("Refresh token");
         }
 
-        String subject = jwtProvider.decodeJwt(accessToken).getSubject();
+        String subject = jwtProvider.decodeJwt(refreshToken).getSubject();
         String newAccessToken = jwtProvider.generateAccessToken(subject);
         return RefreshDto.builder()
                 .accessToken(newAccessToken)

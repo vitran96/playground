@@ -39,6 +39,7 @@ public class SecurityConfig {
                         // NOTE: this way, I can guarantee route like SPA route won't be blocked
                         .requestMatchers(
                                "/api/v1/auth/login",
+                               "/api/v1/auth/refresh",
                                "/api/v1/dummies/say-hi"
                         ).permitAll()
                         .requestMatchers("/api/**").authenticated()

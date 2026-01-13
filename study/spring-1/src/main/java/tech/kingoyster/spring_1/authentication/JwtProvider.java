@@ -80,16 +80,11 @@ public class JwtProvider {
         return builder.sign(algorithm);
     }
 
-    private String generateToken(int expiry) {
-        String str = null;
-        return generateToken(expiry, str);
-    }
-
     public String generateAccessToken(String idStr) {
         return generateToken(accessTokenExpiry, idStr);
     }
 
-    public String generateRefreshToken() {
-        return generateToken(refreshTokenExpiry);
+    public String generateRefreshToken(String idStr) {
+        return generateToken(refreshTokenExpiry, idStr);
     }
 }

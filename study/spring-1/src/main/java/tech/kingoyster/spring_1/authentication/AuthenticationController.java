@@ -44,14 +44,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    @SecurityRequirement(name = "bearerAuth")
     public RefreshDto refresh(
-            @CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
-            @RequestBody RefreshDto refreshRequest) {
+            @CookieValue(REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
         if (Objects.isNull(refreshToken)) {
             throw new NotAuthenticatedException("Refresh token not exists!");
         }
 
-        return authenticationService.refreshToken(refreshToken, refreshRequest.accessToken());
+        return authenticationService.refreshToken(refreshToken);
     }
 }
