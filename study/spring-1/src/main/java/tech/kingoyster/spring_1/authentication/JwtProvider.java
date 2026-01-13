@@ -2,89 +2,23 @@ package tech.kingoyster.spring_1.authentication;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Objects;
 
-@Service
-public class JwtProvider {
-    private final String secret;
-    private final String issuer;
-    private final int accessTokenExpiry;
-    private final int refreshTokenExpiry;
+public interface JwtProvider {
+    Authentication getAuthentication(String token);
 
-    public JwtProvider(
-            @Value("${app.jwt.secret}") String secret,
-            @Value("${spring.application.name}") String issuer,
-            @Value("${app.jwt.access.expiry}") int accessTokenExpiry,
-            @Value("${app.jwt.refresh.expiry}") int refreshTokenExpiry
-    ) {
-        this.secret = secret;
-        this.issuer = issuer;
-        this.accessTokenExpiry = accessTokenExpiry;
-        this.refreshTokenExpiry = refreshTokenExpiry;
-    }
+    void verifyOrThrow(DecodedJWT decodedJWT);
 
-    public Authentication getAuthentication(String token) {
-        DecodedJWT decodedJWT = decodeJwt(token);
-        verifyOrThrow(decodedJWT);
-        String subject = decodedJWT.getSubject();
+    DecodedJWT decodeJwt(String token);
 
-        UserDetails principal = User.builder()
-                .username(subject)
-                // Password cannot be null
-                .password("")
-                .build();
-        return UsernamePasswordAuthenticationToken.authenticated(
-                principal,
-                "",
-                null
-        );
-    }
+    String generateToken(int expiry, String subject);
 
-    public void verifyOrThrow(DecodedJWT decodedJWT) {
-        Algorithm algorithm = Algorithm.HMAC512(secret);
-        JWTVerifier jwtVerifier = JWT.require(algorithm)
-                .withIssuer(issuer)
-                .build();
+    String generateAccessToken(String idStr);
 
-        jwtVerifier.verify(decodedJWT);
-    }
-
-    public DecodedJWT decodeJwt(String token) {
-        return JWT.decode(token);
-    }
-
-    private String generateToken(int expiry, String subject) {
-        Instant now = Instant.now();
-        Algorithm algorithm = Algorithm.HMAC512(secret);
-        JWTCreator.Builder builder = JWT.create()
-                .withIssuer(issuer)
-                .withIssuedAt(now)
-                .withExpiresAt(now.plusMillis(expiry));
-
-        if (Objects.nonNull(subject)) {
-            builder = builder
-                    .withSubject(subject);
-        }
-
-        return builder.sign(algorithm);
-    }
-
-    public String generateAccessToken(String idStr) {
-        return generateToken(accessTokenExpiry, idStr);
-    }
-
-    public String generateRefreshToken(String idStr) {
-        return generateToken(refreshTokenExpiry, idStr);
-    }
+    String generateRefreshToken(String idStr);
 }
