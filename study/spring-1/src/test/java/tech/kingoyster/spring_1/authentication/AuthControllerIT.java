@@ -12,7 +12,7 @@ import tech.kingoyster.spring_1.user.AdminProperties;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(MySqlTestConfiguration.class)
-public class AuthControllerIntegrationTest {
+public class AuthControllerIT {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
