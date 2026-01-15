@@ -1,15 +1,12 @@
 package tech.kingoyster.spring_1.authentication;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "app.jwt")
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -18,7 +15,7 @@ public class JwtProperties {
     private TokenInfo access;
     private TokenInfo refresh;
 
-    @RequiredArgsConstructor
+    @AllArgsConstructor
     @NoArgsConstructor
     @Getter
     @Setter
