@@ -21,6 +21,18 @@ sources = ["pom.xml", "src/main/java/**/*.java", "src/main/resources/*"]
 description = "Run test"
 run = "mvn test"
 
+[tasks."test:all"]
+description = "Run test"
+run = "mvn verify"
+
 [tasks.prepare]
 description = "Pre-start development"
 run = "podman-compose up -d"
+
+[tasks.format]
+alias = "f"
+run = "mvn spotless:apply"
+
+[tasks.lint]
+alias = "l"
+run = "mvn spotless:check"
