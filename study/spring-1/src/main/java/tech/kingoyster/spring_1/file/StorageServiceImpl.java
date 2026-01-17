@@ -2,6 +2,7 @@ package tech.kingoyster.spring_1.file;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,7 +11,7 @@ public class StorageServiceImpl implements StorageService {
     private final FileProperties fileProperties;
 
     @Override
-    public byte[] getFile(String filename) {
+    public Resource getFile(String filename) {
         return null;
     }
 
