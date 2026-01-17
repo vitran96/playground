@@ -14,25 +14,22 @@ import tech.kingoyster.spring_1.user.AdminProperties;
 @Import(MySqlTestConfiguration.class)
 public class AuthControllerIT {
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+    @Autowired private TestRestTemplate testRestTemplate;
 
-    @Autowired
-    private AdminProperties adminProperties;
+    @Autowired private AdminProperties adminProperties;
 
-    @Autowired
-    private MySQLContainer<?> mySQLContainer;
+    @Autowired private MySQLContainer<?> mySQLContainer;
 
     // TODO: dynamic jwt secret
     // TODO: test expired access token; test refresh api; test expired refresh token
 
     @Test
     public void shouldLoginSuperAdmin() {
-        var res = testRestTemplate.postForObject(
-                "/api/v1/auth/login",
-                new LoginRequest(adminProperties.getEmail(), adminProperties.getPassword()),
-                LoginResponse.class
-        );
+        var res =
+                testRestTemplate.postForObject(
+                        "/api/v1/auth/login",
+                        new LoginRequest(adminProperties.getEmail(), adminProperties.getPassword()),
+                        LoginResponse.class);
 
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.accessToken());

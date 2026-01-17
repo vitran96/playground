@@ -2,14 +2,13 @@ package tech.kingoyster.spring_1.customer;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import java.time.LocalDateTime;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Generated;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name="customers")
+@Table(name = "customers")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -30,7 +29,7 @@ public class Customer implements java.io.Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Generated
-    @Column(name="registered_at", insertable = false, updatable = false, length=19)
+    @Column(name = "registered_at", insertable = false, updatable = false, length = 19)
     @ColumnDefault("CURRENT_TIMESTAMP")
     private LocalDateTime registeredAt;
 }

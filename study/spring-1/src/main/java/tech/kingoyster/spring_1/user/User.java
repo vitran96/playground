@@ -2,11 +2,9 @@ package tech.kingoyster.spring_1.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
+import java.time.LocalDateTime;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")

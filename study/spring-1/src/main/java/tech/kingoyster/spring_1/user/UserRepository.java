@@ -1,26 +1,24 @@
 package tech.kingoyster.spring_1.user;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     List<UserSummary> findAllProjectedBy();
+
     Optional<UserSummary> findProjectedById(Integer id);
+
     Optional<UserSummary> findOneProjectedByEmail(String email);
 
     Optional<User> findOneByEmail(String email);
 
     @Modifying
     @Query("UPDATE User u SET u.hashedPassword = :hashedPassword WHERE u.id = :id")
-    void updatePassword(
-            @Param("id") Integer id,
-            @Param("hashedPassword") String hashedPassword
-    );
+    void updatePassword(@Param("id") Integer id, @Param("hashedPassword") String hashedPassword);
 }

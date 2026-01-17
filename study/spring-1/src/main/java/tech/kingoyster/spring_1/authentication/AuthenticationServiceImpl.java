@@ -10,7 +10,6 @@ import tech.kingoyster.spring_1.exception.NotFoundException;
 import tech.kingoyster.spring_1.exception.UserNotAuthenticatedException;
 import tech.kingoyster.spring_1.user.User;
 import tech.kingoyster.spring_1.user.UserRepository;
-import tech.kingoyster.spring_1.user.UserSummary;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +20,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public LoginResponse authenticate(LoginRequest loginRequest) {
-        User user = userRepository.findOneByEmail(loginRequest.username())
-                .orElseThrow(() -> new NotFoundException("User " + loginRequest.username() + " not found!"));
+        User user =
+                userRepository
+                        .findOneByEmail(loginRequest.username())
+                        .orElseThrow(
+                                () ->
+                                        new NotFoundException(
+                                                "User " + loginRequest.username() + " not found!"));
 
         if (!passwordEncoder.matches(loginRequest.password(), user.getHashedPassword())) {
             throw new UserNotAuthenticatedException("User username or password is not correct!");
@@ -31,10 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refreshToken = jwtProvider.generateRefreshToken(user.getId().toString());
         String accessToken = jwtProvider.generateAccessToken(user.getId().toString());
 
-        return LoginResponse.builder()
-                .refreshToken(refreshToken)
-                .accessToken(accessToken)
-                .build();
+        return LoginResponse.builder().refreshToken(refreshToken).accessToken(accessToken).build();
     }
 
     @Override
@@ -45,9 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String subject = jwtProvider.decodeJwt(refreshToken).getSubject();
         String newAccessToken = jwtProvider.generateAccessToken(subject);
-        return RefreshDto.builder()
-                .accessToken(newAccessToken)
-                .build();
+        return RefreshDto.builder().accessToken(newAccessToken).build();
     }
 
     private boolean canRefresh(String token) {

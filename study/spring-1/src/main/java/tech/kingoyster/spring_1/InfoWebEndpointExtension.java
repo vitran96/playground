@@ -1,13 +1,12 @@
 package tech.kingoyster.spring_1;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.web.WebEndpointResponse;
 import org.springframework.boot.actuate.endpoint.web.annotation.EndpointWebExtension;
 import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 @EndpointWebExtension(endpoint = InfoEndpoint.class)

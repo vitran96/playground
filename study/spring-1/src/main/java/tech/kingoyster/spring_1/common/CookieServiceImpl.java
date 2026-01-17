@@ -11,8 +11,7 @@ public class CookieServiceImpl implements CookieService {
 
     public CookieServiceImpl(
             @Value("${app.jwt.refresh.expiry}") int refreshTokenExpiry,
-            @Value("${app.cookie.secure}") boolean secure
-    ) {
+            @Value("${app.cookie.secure}") boolean secure) {
         this.refreshTokenExpiry = refreshTokenExpiry;
         this.secure = secure;
     }

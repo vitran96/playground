@@ -9,15 +9,12 @@ public class AuthUtil {
     AuthUtil() {}
 
     public static Authentication getDummyAuth(String username) {
-        UserDetails principal = User.builder()
-                .username(username)
-                // Password cannot be null
-                .password("")
-                .build();
-        return UsernamePasswordAuthenticationToken.authenticated(
-                principal,
-                "",
-                null
-        );
+        UserDetails principal =
+                User.builder()
+                        .username(username)
+                        // Password cannot be null
+                        .password("")
+                        .build();
+        return UsernamePasswordAuthenticationToken.authenticated(principal, "", null);
     }
 }

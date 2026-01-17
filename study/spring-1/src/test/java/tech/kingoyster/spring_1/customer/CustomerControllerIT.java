@@ -6,5 +6,4 @@ import tech.kingoyster.spring_1.MySqlTestConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(MySqlTestConfiguration.class)
-public class CustomerControllerIT {
-}
+public class CustomerControllerIT {}

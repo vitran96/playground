@@ -1,5 +1,9 @@
 package tech.kingoyster.spring_1.customer;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,23 +14,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import tech.kingoyster.spring_1.TestUtils;
 import tech.kingoyster.spring_1.exception.CustomerAlreadyExistsException;
 import tech.kingoyster.spring_1.exception.NotFoundException;
-import tech.kingoyster.spring_1.TestUtils;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
 
-    @InjectMocks
-    private CustomerServiceImpl customerService;
+    @InjectMocks private CustomerServiceImpl customerService;
 
-    @Mock
-    private CustomerRepository customerRepository;
+    @Mock private CustomerRepository customerRepository;
 
     @Test
     public void whenGetAll_thenReturnEmpty() {
@@ -39,22 +36,16 @@ public class CustomerServiceTest {
 
     @Test
     public void whenGetAll_thenReturn2Customers() {
-        Mockito.when(customerRepository.findAll()).thenReturn(
-                List.of(
-                        new Customer(
-                                1,
-                                "customer1",
-                                "customer1@gmail.com",
-                                LocalDateTime.now()
-                        ),
-                        new Customer(
-                                2,
-                                "customer2",
-                                "customer2@gmail.com",
-                                LocalDateTime.now()
-                        )
-                )
-        );
+        Mockito.when(customerRepository.findAll())
+                .thenReturn(
+                        List.of(
+                                new Customer(
+                                        1, "customer1", "customer1@gmail.com", LocalDateTime.now()),
+                                new Customer(
+                                        2,
+                                        "customer2",
+                                        "customer2@gmail.com",
+                                        LocalDateTime.now())));
 
         List<Customer> list = customerService.getAll();
 
@@ -78,13 +69,10 @@ public class CustomerServiceTest {
                 .thenReturn(
                         Optional.of(
                                 new Customer(
-                                    5,
-                                    "customer5",
-                                    "customer5@gmail.com",
-                                    LocalDateTime.now()
-                            )
-                        )
-                );
+                                        5,
+                                        "customer5",
+                                        "customer5@gmail.com",
+                                        LocalDateTime.now())));
 
         Customer customer = customerService.getById(5);
 
@@ -97,23 +85,11 @@ public class CustomerServiceTest {
     public void whenCreateNewCustomer_thenCustomerIsCreated() {
         LocalDateTime now = LocalDateTime.now();
         Mockito.when(customerRepository.save(Mockito.any()))
-                .thenReturn(
-                    new Customer(
-                            44,
-                            "customer4",
-                            "customer4@gmail.com",
-                            now
-                    )
-                );
+                .thenReturn(new Customer(44, "customer4", "customer4@gmail.com", now));
 
-        Customer customer = customerService.create(
-                new Customer(
-                        null,
-                        "customer4",
-                        "customer4@gmail.com",
-                        null
-                )
-        );
+        Customer customer =
+                customerService.create(
+                        new Customer(null, "customer4", "customer4@gmail.com", null));
 
         Assertions.assertEquals(44, customer.getId());
         Assertions.assertEquals("customer4", customer.getName());
@@ -126,7 +102,11 @@ public class CustomerServiceTest {
         Mockito.when(customerRepository.save(Mockito.any()))
                 .thenThrow(DataIntegrityViolationException.class);
 
-        Assertions.assertThrows(CustomerAlreadyExistsException.class, () -> customerService.create(new Customer(null, "customer5", "customer5@gmail.com", null)));
+        Assertions.assertThrows(
+                CustomerAlreadyExistsException.class,
+                () ->
+                        customerService.create(
+                                new Customer(null, "customer5", "customer5@gmail.com", null)));
     }
 
     // TODO: anyway to move this outside?
@@ -144,10 +124,7 @@ public class CustomerServiceTest {
                                         5,
                                         "customer5",
                                         "customer5@gmail.com",
-                                        LocalDateTime.now()
-                                )
-                        )
-                );
+                                        LocalDateTime.now())));
 
         customerService.deleteById(randomId);
 
@@ -159,6 +136,7 @@ public class CustomerServiceTest {
     public void whenDeleteNonExistCustomer_thenThrowError(int randomId) {
         Mockito.when(customerRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(NotFoundException.class, () -> customerService.deleteById(randomId));
+        Assertions.assertThrows(
+                NotFoundException.class, () -> customerService.deleteById(randomId));
     }
 }

@@ -9,7 +9,7 @@ import org.testcontainers.utility.DockerImageName;
 @TestConfiguration(proxyBeanMethods = false)
 public class MySqlTestConfiguration {
 
-//    private static final String MYSQL_IMAGE = "docker.io/mysql:9.4.0-oraclelinux9";
+    //    private static final String MYSQL_IMAGE = "docker.io/mysql:9.4.0-oraclelinux9";
     private static final String MYSQL_IMAGE = "mysql:9.4.0-oraclelinux9";
 
     @Bean

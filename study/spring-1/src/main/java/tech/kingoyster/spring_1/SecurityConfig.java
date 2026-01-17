@@ -1,9 +1,9 @@
 package tech.kingoyster.spring_1;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,14 +15,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.*;
 import tech.kingoyster.spring_1.authentication.AccessTokenFilter;
 import tech.kingoyster.spring_1.authentication.CustomAccessDeniedHandler;
 import tech.kingoyster.spring_1.authentication.CustomAuthenticationEntryPoint;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -36,17 +33,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        // NOTE: this way, I can guarantee route like SPA route won't be blocked
-                        .requestMatchers(
-                               "/api/v1/auth/login",
-                               "/api/v1/auth/refresh",
-                               "/api/v1/dummies/say-hi"
-                        ).permitAll()
-                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll()
-                )
+        http.authorizeHttpRequests(
+                        auth ->
+                                auth
+                                        // NOTE: this way, I can guarantee route like SPA route
+                                        // won't be blocked
+                                        .requestMatchers(
+                                                "/api/v1/auth/login",
+                                                "/api/v1/auth/refresh",
+                                                "/api/v1/dummies/say-hi")
+                                        .permitAll()
+                                        .requestMatchers("/api/**")
+                                        .authenticated()
+                                        .anyRequest()
+                                        .permitAll())
                 // TODO: split and re-enable this
                 .csrf(AbstractHttpConfigurer::disable)
                 // NOTE: why does this affect redirect?
@@ -56,10 +56,10 @@ public class SecurityConfig {
                 // NOTE: basic auth is now (simple), no "formLogin()" -> no redirect
                 .httpBasic(AbstractHttpConfigurer::disable)
                 // Override Spring Security error handling for custom ErrorDetail
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
-                )
+                .exceptionHandling(
+                        ex ->
+                                ex.authenticationEntryPoint(customAuthenticationEntryPoint)
+                                        .accessDeniedHandler(customAccessDeniedHandler))
                 .addFilterBefore(accessTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -73,7 +73,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:5173")); // TODO: this should come from application.yml & ENV
+        cfg.setAllowedOrigins(
+                List.of("http://localhost:5173")); // TODO: this should come from application.yml &
+        // ENV
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(List.of("*")); // TODO: this should be limited too
         cfg.setAllowCredentials(true);

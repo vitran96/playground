@@ -5,15 +5,14 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import java.time.Instant;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.Objects;
 
 @Service
 public class JwtProviderImpl implements JwtProvider {
@@ -23,9 +22,7 @@ public class JwtProviderImpl implements JwtProvider {
     private final int refreshTokenExpiry;
 
     public JwtProviderImpl(
-            @Value("${spring.application.name}") String issuer,
-            JwtProperties jwtProperties
-    ) {
+            @Value("${spring.application.name}") String issuer, JwtProperties jwtProperties) {
         this.issuer = issuer;
         this.secret = jwtProperties.getSecret();
         this.accessTokenExpiry = jwtProperties.getAccess().getExpiry();
@@ -36,14 +33,14 @@ public class JwtProviderImpl implements JwtProvider {
     public String generateToken(int expiry, String subject) {
         Instant now = Instant.now();
         Algorithm algorithm = Algorithm.HMAC512(secret);
-        JWTCreator.Builder builder = JWT.create()
-                .withIssuer(issuer)
-                .withIssuedAt(now)
-                .withExpiresAt(now.plusMillis(expiry));
+        JWTCreator.Builder builder =
+                JWT.create()
+                        .withIssuer(issuer)
+                        .withIssuedAt(now)
+                        .withExpiresAt(now.plusMillis(expiry));
 
         if (Objects.nonNull(subject)) {
-            builder = builder
-                    .withSubject(subject);
+            builder = builder.withSubject(subject);
         }
 
         return builder.sign(algorithm);
@@ -55,24 +52,19 @@ public class JwtProviderImpl implements JwtProvider {
         verifyOrThrow(decodedJWT);
         String subject = decodedJWT.getSubject();
 
-        UserDetails principal = User.builder()
-                .username(subject)
-                // Password cannot be null
-                .password("")
-                .build();
-        return UsernamePasswordAuthenticationToken.authenticated(
-                principal,
-                "",
-                null
-        );
+        UserDetails principal =
+                User.builder()
+                        .username(subject)
+                        // Password cannot be null
+                        .password("")
+                        .build();
+        return UsernamePasswordAuthenticationToken.authenticated(principal, "", null);
     }
 
     @Override
     public void verifyOrThrow(DecodedJWT decodedJWT) {
         Algorithm algorithm = Algorithm.HMAC512(secret);
-        JWTVerifier jwtVerifier = JWT.require(algorithm)
-                .withIssuer(issuer)
-                .build();
+        JWTVerifier jwtVerifier = JWT.require(algorithm).withIssuer(issuer).build();
 
         jwtVerifier.verify(decodedJWT);
     }

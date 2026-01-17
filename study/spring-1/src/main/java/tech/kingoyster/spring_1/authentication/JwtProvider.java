@@ -1,13 +1,7 @@
 package tech.kingoyster.spring_1.authentication;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.core.Authentication;
-
-import java.time.Instant;
-import java.util.Objects;
 
 public interface JwtProvider {
     Authentication getAuthentication(String token);

@@ -1,14 +1,13 @@
 package tech.kingoyster.spring_1.user;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.kingoyster.spring_1.exception.NotFoundException;
 import tech.kingoyster.spring_1.exception.UserAlreadyExistsException;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserSummary getById(Integer id) {
-        return userRepository.findProjectedById(id)
+        return userRepository
+                .findProjectedById(id)
                 .orElseThrow(() -> new NotFoundException("User " + id + " not found!"));
     }
 

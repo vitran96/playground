@@ -1,13 +1,12 @@
 package tech.kingoyster.spring_1.customer;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import tech.kingoyster.spring_1.exception.NotFoundException;
 import tech.kingoyster.spring_1.exception.CustomerAlreadyExistsException;
-
-import java.util.List;
+import tech.kingoyster.spring_1.exception.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getById(Integer id) {
-        return customerRepository.findById(id)
+        return customerRepository
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException("Customer " + id + " not found!"));
     }
 

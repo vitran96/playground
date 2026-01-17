@@ -12,14 +12,13 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(title = "My API", version = "1.0.0"),
         security = @SecurityRequirement(name = "bearerAuth") // Apply globally if needed
-)
+        )
 @SecurityScheme(
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
         name = "bearerAuth", // This name will be referenced in SecurityRequirement
         scheme = "bearer",
-        in = SecuritySchemeIn.HEADER
-)
+        in = SecuritySchemeIn.HEADER)
 public class SpringDocConfig {
     // No additional code needed here for basic setup
 }

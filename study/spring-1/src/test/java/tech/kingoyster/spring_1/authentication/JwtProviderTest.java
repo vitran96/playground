@@ -1,4 +1,3 @@
 package tech.kingoyster.spring_1.authentication;
 
-public class JwtProviderTest {
-}
+public class JwtProviderTest {}
