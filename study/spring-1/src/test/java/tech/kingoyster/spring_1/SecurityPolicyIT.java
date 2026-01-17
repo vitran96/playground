@@ -17,9 +17,6 @@ import tech.kingoyster.spring_1.user.UserRepository;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-
 @SpringBootTest(properties = {
         "spring.liquibase.enabled=false", // Don't run migration
         "spring.jpa.hibernate.ddl-auto=none", // Don't validate JPA

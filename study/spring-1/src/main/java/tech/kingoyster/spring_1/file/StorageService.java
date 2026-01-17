@@ -1,9 +1,9 @@
 package tech.kingoyster.spring_1.file;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class StorageService {
+public interface StorageService {
+    byte[] getFile(String filename);
+    List<String> getAll();
+    void saveFile(String filename, byte[] content);
 }

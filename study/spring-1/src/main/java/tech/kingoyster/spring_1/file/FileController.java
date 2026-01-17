@@ -38,6 +38,7 @@ public class FileController {
 //        // TODO:
 //    }
 
+    // TODO: can file upload be a stream?
     // NOTE: @RequestPart allow use to send both BLOB data & JSON
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
