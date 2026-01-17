@@ -12,11 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import tech.kingoyster.spring_1.exception.CustomerAlreadyExistsException;
 import tech.kingoyster.spring_1.exception.NotFoundException;
+import tech.kingoyster.spring_1.TestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,7 +29,7 @@ public class CustomerServiceTest {
     private CustomerRepository customerRepository;
 
     @Test
-    public void getAllreturnEmptyListOfUser() {
+    public void whenGetAll_thenReturnEmpty() {
         Mockito.when(customerRepository.findAll()).thenReturn(List.of());
 
         List<Customer> list = customerService.getAll();
@@ -38,7 +38,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void getAllReturnListOf2Customers() {
+    public void whenGetAll_thenReturn2Customers() {
         Mockito.when(customerRepository.findAll()).thenReturn(
                 List.of(
                         new Customer(
@@ -64,22 +64,16 @@ public class CustomerServiceTest {
         Assertions.assertEquals("customer2@gmail.com", list.get(1).getEmail());
     }
 
-    static Stream<Integer> randomNumbers() {
-        Random random = new Random();
-        return Stream.generate(() -> random.nextInt(100)) // Generate random integers up to 99
-                .limit(10); // Generate 10 random numbers
-    }
-
     @ParameterizedTest
     @MethodSource("randomNumbers")
-    public void getNonExistsCustomer(int randomId) {
+    public void whenGetNonExistsCustomer_thenThrowError(int randomId) {
         Mockito.when(customerRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(NotFoundException.class, () -> customerService.getById(randomId));
     }
 
     @Test
-    public void get1Customer() {
+    public void whenGetCustomerById_thenReturnTheCustomer() {
         Mockito.when(customerRepository.findById(Mockito.anyInt()))
                 .thenReturn(
                         Optional.of(
@@ -100,7 +94,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void createNewCustomer() {
+    public void whenCreateNewCustomer_thenCustomerIsCreated() {
         LocalDateTime now = LocalDateTime.now();
         Mockito.when(customerRepository.save(Mockito.any()))
                 .thenReturn(
@@ -128,16 +122,21 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void createCustomerWithConflictEmail() {
+    public void whenCreateExistedCustomerByEmail_thenThrowError() {
         Mockito.when(customerRepository.save(Mockito.any()))
                 .thenThrow(DataIntegrityViolationException.class);
 
         Assertions.assertThrows(CustomerAlreadyExistsException.class, () -> customerService.create(new Customer(null, "customer5", "customer5@gmail.com", null)));
     }
 
+    // TODO: anyway to move this outside?
+    static Stream<Integer> randomNumbers() {
+        return TestUtils.randomNumbers();
+    }
+
     @ParameterizedTest
     @MethodSource("randomNumbers")
-    public void delete1Customer(int randomId) {
+    public void whenDeleteCustomerById_thenCustomerDeleted(int randomId) {
         Mockito.when(customerRepository.findById(Mockito.anyInt()))
                 .thenReturn(
                         Optional.of(
@@ -157,7 +156,7 @@ public class CustomerServiceTest {
 
     @ParameterizedTest
     @MethodSource("randomNumbers")
-    public void deleteNonExistsCustomer(int randomId) {
+    public void whenDeleteNonExistCustomer_thenThrowError(int randomId) {
         Mockito.when(customerRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(NotFoundException.class, () -> customerService.deleteById(randomId));
