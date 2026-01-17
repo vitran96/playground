@@ -38,5 +38,4 @@ alias = "l"
 run = "mvn spotless:check"
 
 [tasks.push]
-alias = "up"
 run = "jj b m main --to @- ; jj git push -b main"
