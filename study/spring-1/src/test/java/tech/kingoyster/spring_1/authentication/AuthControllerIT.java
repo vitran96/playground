@@ -23,6 +23,9 @@ public class AuthControllerIT {
     @Autowired
     private MySQLContainer<?> mySQLContainer;
 
+    // TODO: dynamic jwt secret
+    // TODO: test expired access token; test refresh api; test expired refresh token
+
     @Test
     public void shouldLoginSuperAdmin() {
         var res = testRestTemplate.postForObject(
@@ -34,6 +37,5 @@ public class AuthControllerIT {
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.accessToken());
         Assertions.assertNotNull(res.refreshToken());
-
     }
 }
