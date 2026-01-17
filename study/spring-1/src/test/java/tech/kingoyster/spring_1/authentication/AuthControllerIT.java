@@ -22,6 +22,8 @@ public class AuthControllerIT {
 
     // TODO: dynamic jwt secret
     // TODO: test expired access token; test refresh api; test expired refresh token
+    // TODO: create and login with a custom user
+    // TODO: create and login with non-exists user
 
     @Test
     public void shouldLoginSuperAdmin() {
