@@ -16,6 +16,13 @@ spring:
 #    baseline-on-migrate: false
 #    locations: classpath:db
 #    clean-disabled: true
+  servlet:
+#   NOTE: config blob & API request size
+    multipart:
+#     DEFAULT: 1MB
+      max-file-size: 10MB
+#     DEFAULT: 10MB
+      max-request-size: 10MB
 
 springdoc:
   swagger-ui:
