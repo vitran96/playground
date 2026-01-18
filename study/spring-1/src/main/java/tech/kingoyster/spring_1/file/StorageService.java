@@ -2,6 +2,7 @@ package tech.kingoyster.spring_1.file;
 
 import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface StorageService {
@@ -12,7 +13,7 @@ public interface StorageService {
      */
     Resource getFile(String filename);
 
-    List<String> getAll();
+    List<String> getAll() throws IOException;
 
     void saveFile(String filename, byte[] content);
 }

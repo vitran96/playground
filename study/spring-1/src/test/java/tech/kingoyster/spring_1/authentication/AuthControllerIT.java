@@ -20,13 +20,8 @@ public class AuthControllerIT {
 
     @Autowired private MySQLContainer<?> mySQLContainer;
 
-    // TODO: dynamic jwt secret
-    // TODO: test expired access token; test refresh api; test expired refresh token
-    // TODO: create and login with a custom user
-    // TODO: create and login with non-exists user
-
     @Test
-    public void shouldLoginSuperAdmin() {
+    public void whenLoginAdmin_thenReturnToken() {
         var res =
                 testRestTemplate.postForObject(
                         "/api/v1/auth/login",
@@ -36,5 +31,35 @@ public class AuthControllerIT {
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.accessToken());
         Assertions.assertNotNull(res.refreshToken());
+    }
+
+    @Test
+    void whenLoginInvalidCredential_thenThrowError() {
+        Assertions.fail("not implement");
+    }
+
+    @Test
+    void whenLoginNonExistUser_thenThrowError() {
+        Assertions.fail("not implement");
+    }
+
+    @Test
+    void whenLogin_thenReturnToken() {
+        Assertions.fail("not implement");
+    }
+
+    @Test
+    void whenRefreshToken_thenReturnNewToken() {
+        Assertions.fail("not implement");
+    }
+
+    @Test
+    void whenRefreshExpiredToken_thenThrowError() {
+        Assertions.fail("not implement");
+    }
+
+    @Test
+    void whenLogout_thenRefreshTokenIsRemoved() {
+        Assertions.fail("not implement");
     }
 }

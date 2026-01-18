@@ -47,7 +47,6 @@ public class SecurityConfig {
                                         .authenticated()
                                         .anyRequest()
                                         .permitAll())
-                // TODO: split and re-enable this
                 .csrf(AbstractHttpConfigurer::disable)
                 // NOTE: why does this affect redirect?
                 .requestCache(RequestCacheConfigurer::disable)

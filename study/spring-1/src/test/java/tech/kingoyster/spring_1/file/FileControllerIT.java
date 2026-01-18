@@ -30,6 +30,16 @@ public class FileControllerIT {
     @MockitoBean private FileProperties fileProperties;
 
     @Test
+    void whenGetListOfFileOnNewList_thenReturnEmptyList(@TempDir Path tempDir) {
+        Assertions.fail("not implement");
+    }
+
+    @Test
+    void whenGetListOfFileOf2Files_thenReturnListOf2Files(@TempDir Path tempDir) {
+        Assertions.fail("not implement");
+    }
+
+    @Test
     void whenUpload_thenNoError(@TempDir Path tempDir) throws Exception {
         Mockito.when(fileProperties.getDirectory()).thenReturn(tempDir);
         var mockFile =
@@ -37,6 +47,11 @@ public class FileControllerIT {
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/file").file(mockFile))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    void whenUploadOversizeFile_thenThrowError(@TempDir Path tempDir) {
+        Assertions.fail("not implement");
     }
 
     @Test
@@ -65,5 +80,10 @@ public class FileControllerIT {
     @Test
     void whenDownloadNonExistsFile_thenThrowNotFound(@TempDir Path tempDir) throws Exception {
         Assertions.fail("not implemented");
+    }
+
+    @Test
+    void whenDownloadOversizeFile_thenThrowError(@TempDir Path tempDir) {
+        Assertions.fail("not implement");
     }
 }

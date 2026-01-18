@@ -2,6 +2,7 @@ package tech.kingoyster.spring_1.user;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class InitAdmin {
     public final UserRepository userRepository;
     public final PasswordEncoder passwordEncoder;
@@ -30,8 +32,7 @@ public class InitAdmin {
                             .hashedPassword(passwordEncoder.encode(adminProperties.getPassword()))
                             .build());
         } catch (Exception e) {
-            // TODO: add logger
-            System.out.println("Failed to create admin account: " + e.getMessage());
+            log.error("Error while init super admin user!", e);
         }
     }
 }
