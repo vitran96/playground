@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtProviderTest {
-    @InjectMocks private JwtProvider jwtProvider;
+//    @InjectMocks private JwtProvider jwtProvider;
 
     @Test
     void whenParsingExpiredToken_thenThrowError() {

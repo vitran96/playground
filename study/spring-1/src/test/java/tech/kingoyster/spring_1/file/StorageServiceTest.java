@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 @ExtendWith(MockitoExtension.class)
 public class StorageServiceTest {
-    @InjectMocks private StorageService storageService;
+    @InjectMocks private StorageServiceImpl storageService;
 
     @Mock private FileProperties fileProperties;
 

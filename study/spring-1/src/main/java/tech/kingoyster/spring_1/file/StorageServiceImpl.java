@@ -20,14 +20,10 @@ public class StorageServiceImpl implements StorageService {
     private final FileProperties fileProperties;
 
     @Override
-    public Resource getFile(String filename) throws IOException {
+    public Resource getFile(String filename) {
         var path = fileProperties.getDirectory().resolve(filename);
         if (Files.notExists(path)) {
             throw new FileNotFoundException(filename);
-        } else {
-            if (Files.notExists(fileProperties.getDirectory())) {
-                Files.createDirectory(fileProperties.getDirectory().toAbsolutePath());
-            }
         }
 
         return new FileSystemResource(path);
