@@ -15,5 +15,5 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class FileProperties {
-    private Path directory = Path.of("").toAbsolutePath();
+    private Path directory = Path.of("storage").toAbsolutePath();
 }

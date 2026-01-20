@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +47,7 @@ public class FileController {
                     schema = @Schema(type = "string", format = "binary") // NOTE: force download button
             )
     )
-    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) throws IOException {
         var resource = storageService.getFile(filename);
 
         var type = MediaTypeFactory.getMediaType(resource)
@@ -70,14 +72,22 @@ public class FileController {
     // NOTE: @RequestPart allow use to send both BLOB data & JSON
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(
+            summary = "Fixed Upload",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            encoding = @Encoding(name = "metadata", contentType = "application/json")
+                    )
+            )
+    )
     public void uploadFile(
             @RequestPart("file") MultipartFile file,
-            @RequestPart("metadata") Map<String, String> additionalData)
+            @RequestPart(value = "metadata", required = false) Map<String, String> additionalData)
             throws IOException {
         var filename = file.getOriginalFilename();
         // NOTE: this will load the whole file into memory
         var data = file.getBytes();
 
-        // TODO:
+        storageService.saveFile(filename, data);
     }
 }

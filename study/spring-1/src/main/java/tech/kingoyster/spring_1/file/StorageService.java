@@ -11,9 +11,9 @@ public interface StorageService {
      * @param filename existing filename
      * @return {@link org.springframework.core.io.FileSystemResource}
      */
-    Resource getFile(String filename);
+    Resource getFile(String filename) throws IOException;
 
     List<String> getAll() throws IOException;
 
-    void saveFile(String filename, byte[] content);
+    void saveFile(String filename, byte[] content) throws IOException;
 }
