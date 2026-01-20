@@ -24,8 +24,8 @@ public class FileController {
     private final StorageService storageService;
 
     @GetMapping
-    public List<String> listFile() {
-        return null;
+    public List<String> listFile() throws IOException {
+        return storageService.getAll();
     }
 
     // NOTE: below will not reflect the dynamic content type
