@@ -2,6 +2,8 @@ package tech.kingoyster.spring_1.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
@@ -17,11 +19,11 @@ public class ExceptionAdvice {
     private final ObjectMapper objectMapper;
 
     @ExceptionHandler(Spring1Exception.class)
-    public ResponseEntity<ErrorDetail> handleAppException(Spring1Exception e, WebRequest request) {
+    public ResponseEntity<ErrorDetail> handleAppException(Spring1Exception e, HttpServletRequest request) {
         HttpStatus httpStatus = extractStatusAnnotation(e);
         var error =
                 new ErrorDetail(
-                        LocalDateTime.now(), -1, e.getMessage(), request.getContextPath(), null);
+                        LocalDateTime.now(), -1, e.getMessage(), request.getServletPath(), null);
 
         return new ResponseEntity<>(error, httpStatus);
     }
@@ -37,10 +39,10 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetail> handleAppException(Exception e, WebRequest request) {
+    public ResponseEntity<ErrorDetail> handleAppException(Exception e, HttpServletRequest request) {
         var error =
                 new ErrorDetail(
-                        LocalDateTime.now(), -1, e.getMessage(), request.getContextPath(), null);
+                        LocalDateTime.now(), -1, e.getMessage(), request.getServletPath(), null);
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
