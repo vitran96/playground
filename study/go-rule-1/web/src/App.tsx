@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import 'antd/dist/reset.css';
 import '@gorules/jdm-editor/dist/style.css';
 import './App.css'
-import { DecisionGraph, GraphSimulator, JdmConfigProvider, type DecisionGraphType, type Simulation } from '@gorules/jdm-editor';
+import { DecisionGraph, decisionModelSchema, GraphSimulator, JdmConfigProvider, type DecisionGraphType, type Simulation } from '@gorules/jdm-editor';
 import { PlayCircleOutlined } from '@ant-design/icons';
 
 type Rule = { id: number; name: string; decision: string };
@@ -56,8 +56,6 @@ function DetailView({ id, onBack }: { id: number | null; onBack: () => void }) {
       });
   }, [id]);
 
-  // Saves current graph, returns the rule id to use (existing or newly created).
-  // Returns null if validation fails (new rule, no name).
   const saveRule = async (currentGraph: DecisionGraphType): Promise<number | null> => {
     if (ruleId === null && !name.trim()) {
       setNameError(true);
@@ -99,6 +97,44 @@ function DetailView({ id, onBack }: { id: number | null; onBack: () => void }) {
     setSimulation({ result: { ...result, snapshot: runGraph } });
   };
 
+  const handleUploadClick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const content = await file.text();
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(content);
+      } catch (e) {
+        console.error('Invalid JSON syntax:', e);
+        return;
+      }
+
+      const result = decisionModelSchema.safeParse(parsed);
+      if (!result.success) {
+        console.error('Invalid decision file:', result.error);
+        return;
+      }
+
+      setGraph(result.data);
+    };
+    input.click();
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([JSON.stringify(graph, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name || 'decision'}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div style={{ padding: 20, height: '90vh' }}>
       <button onClick={onBack}>← Back</button>
@@ -111,6 +147,8 @@ function DetailView({ id, onBack }: { id: number | null; onBack: () => void }) {
         />
       )}
       <button onClick={handleSave}>Save</button>
+      <button onClick={handleUploadClick} style={{ marginLeft: 10 }}>Upload JSON</button>
+      <button onClick={handleDownload} style={{ marginLeft: 10 }}>Download JSON</button>
       <div style={{ margin: '10px 0' }}>
         <label>
           Input JSON:
@@ -129,7 +167,6 @@ function DetailView({ id, onBack }: { id: number | null; onBack: () => void }) {
             value={graph}
             onChange={setGraph}
             simulate={simulation}
-            defaultActivePanel="simulator"
             panels={[
               {
                 id: 'simulator',
