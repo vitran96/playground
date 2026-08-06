@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class Rule {
-
     private Long id;
     private String name;
-    private String decision; // raw JDM JSON as string
+
+    // raw JDM JSON as string
+    private String decision;
 }
