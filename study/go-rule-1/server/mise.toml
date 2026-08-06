@@ -1,0 +1,5 @@
+[tools]
+java = "25"
+maven = "3.9"
+"vfox:jdx/vfox-spring-boot" = "4.1.0"
+gradle = "9.7.0"

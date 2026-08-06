@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: myapp-backend
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
