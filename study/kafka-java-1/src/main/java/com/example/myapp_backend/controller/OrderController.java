@@ -2,14 +2,13 @@ package com.example.myapp_backend.controller;
 
 import com.example.myapp_backend.config.KafkaConfig;
 import com.example.myapp_backend.model.Events;
-import com.example.myapp_backend.model.Notification;
 import com.example.myapp_backend.model.Order;
 import com.example.myapp_backend.model.OrderItem;
-import com.example.myapp_backend.repository.NotificationRepository;
 import com.example.myapp_backend.repository.OrderRepository;
 import com.example.myapp_backend.repository.ProductRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +23,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    private final NotificationRepository notificationRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Data
@@ -46,6 +45,8 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest req) {
+        log.info("OrderController.createOrder: Creating order for customer {}", req != null ? req.getCustomerId() : null);
+
         String orderId = UUID.randomUUID().toString();
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -75,13 +76,13 @@ public class OrderController {
 
         orderRepository.save(order);
 
-        notificationRepository.add(new Notification(
-                UUID.randomUUID().toString(),
-                orderId,
-                "Order created (PENDING). Triggering Saga...",
-                "INFO",
-                LocalDateTime.now()
-        ));
+        kafkaTemplate.send(KafkaConfig.TOPIC_NOTIFICATION, orderId,
+                new Events.NotificationEvent(
+                        orderId,
+                        "Order created (PENDING). Triggering Saga...",
+                        "INFO",
+                        LocalDateTime.now()
+                ));
 
         // Publish OrderCreated event to Kafka
         kafkaTemplate.send(KafkaConfig.TOPIC_ORDER_CREATED, orderId,
@@ -92,11 +93,13 @@ public class OrderController {
 
     @GetMapping
     public Collection<Order> getAllOrders() {
+        log.info("OrderController.getAllOrders: Fetching all orders");
         return orderRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrderById(@PathVariable String id) {
+        log.info("OrderController.getOrderById: Fetching order with id {}", id);
         return orderRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

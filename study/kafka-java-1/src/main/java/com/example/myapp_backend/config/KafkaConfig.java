@@ -24,6 +24,10 @@ public class KafkaConfig {
     public static final String TOPIC_INVENTORY_FAILED = "inventory-failed";
     public static final String TOPIC_PAYMENT_PROCESSED = "payment-processed";
     public static final String TOPIC_PAYMENT_FAILED = "payment-failed";
+    public static final String TOPIC_ORDER_COMPLETED = "order-completed";
+    public static final String TOPIC_ORDER_FAILED = "order-failed";
+    public static final String TOPIC_RELEASE_STOCK = "release-stock";
+    public static final String TOPIC_NOTIFICATION = "notification";
 
     @Bean
     public NewTopic orderCreatedTopic() {
@@ -48,6 +52,26 @@ public class KafkaConfig {
     @Bean
     public NewTopic paymentFailedTopic() {
         return TopicBuilder.name(TOPIC_PAYMENT_FAILED).partitions(1).replicas(1).build();
+    }
+
+    @Bean
+    public NewTopic orderCompletedTopic() {
+        return TopicBuilder.name(TOPIC_ORDER_COMPLETED).partitions(1).replicas(1).build();
+    }
+
+    @Bean
+    public NewTopic orderFailedTopic() {
+        return TopicBuilder.name(TOPIC_ORDER_FAILED).partitions(1).replicas(1).build();
+    }
+
+    @Bean
+    public NewTopic releaseStockTopic() {
+        return TopicBuilder.name(TOPIC_RELEASE_STOCK).partitions(1).replicas(1).build();
+    }
+
+    @Bean
+    public NewTopic notificationTopic() {
+        return TopicBuilder.name(TOPIC_NOTIFICATION).partitions(1).replicas(1).build();
     }
 
     @Bean

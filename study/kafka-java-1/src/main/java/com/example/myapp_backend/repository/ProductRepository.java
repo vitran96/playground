@@ -1,6 +1,7 @@
 package com.example.myapp_backend.repository;
 
 import com.example.myapp_backend.model.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
+@Slf4j
 public class ProductRepository {
     private final Map<String, Product> store = new ConcurrentHashMap<>();
 
@@ -21,19 +23,23 @@ public class ProductRepository {
     }
 
     public Collection<Product> findAll() {
+        log.info("ProductRepository.findAll: Retrieving all products");
         return store.values();
     }
 
     public Optional<Product> findById(String id) {
+        log.info("ProductRepository.findById: Finding product with id {}", id);
         return Optional.ofNullable(store.get(id));
     }
 
     public Product save(Product product) {
+        log.info("ProductRepository.save: Saving product {}", product != null ? product.getId() : null);
         store.put(product.getId(), product);
         return product;
     }
 
     public synchronized boolean reserveStock(String productId, int quantity) {
+        log.info("ProductRepository.reserveStock: Reserving {} stock for product {}", quantity, productId);
         Product p = store.get(productId);
         if (p != null && p.getStockQuantity() >= quantity) {
             p.setStockQuantity(p.getStockQuantity() - quantity);
@@ -43,6 +49,7 @@ public class ProductRepository {
     }
 
     public synchronized void releaseStock(String productId, int quantity) {
+        log.info("ProductRepository.releaseStock: Releasing {} stock for product {}", quantity, productId);
         Product p = store.get(productId);
         if (p != null) {
             p.setStockQuantity(p.getStockQuantity() + quantity);

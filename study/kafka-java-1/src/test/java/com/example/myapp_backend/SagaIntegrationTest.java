@@ -34,6 +34,9 @@ public class SagaIntegrationTest {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private com.example.myapp_backend.controller.NotificationController notificationController;
+
     @BeforeEach
     public void setup() throws InterruptedException {
         // Give Kafka consumers time to complete group assignment
@@ -94,5 +97,14 @@ public class SagaIntegrationTest {
         // Check compensating transaction released stock back
         Product finalP102 = productRepository.findById("P102").orElseThrow();
         assertEquals(initialStock, finalP102.getStockQuantity());
+    }
+
+    @Test
+    public void testClearNotifications() {
+        notificationRepository.add(new Notification("test-id", "order-1", "Test Msg", "INFO", java.time.LocalDateTime.now()));
+        assertFalse(notificationController.getNotifications().isEmpty());
+
+        notificationController.clearNotifications();
+        assertTrue(notificationController.getNotifications().isEmpty());
     }
 }
