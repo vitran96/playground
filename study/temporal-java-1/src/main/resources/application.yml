@@ -1,6 +1,10 @@
 spring:
   application:
     name: myapp-backend
+  docker:
+    compose:
+      docker-command: podman
+      enabled: false
 
 springdoc:
   api-docs:
