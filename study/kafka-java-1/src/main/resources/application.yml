@@ -13,6 +13,10 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  docker:
+    compose:
+      docker-command: podman
+      enabled: false
 
 springdoc:
   api-docs:
