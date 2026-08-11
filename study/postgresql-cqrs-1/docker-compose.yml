@@ -1,0 +1,90 @@
+services:
+  pg-primary:
+    image: postgres:17
+    container_name: pg-primary
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: cqrs_user
+      POSTGRES_PASSWORD: cqrs_pass
+      POSTGRES_DB: cqrs_db
+    volumes:
+      - pg-primary-data:/var/lib/postgresql/data
+      - ./infra/primary/init.sh:/docker-entrypoint-initdb.d/init.sh
+    command:
+      - postgres
+      - -c
+      - wal_level=replica
+      - -c
+      - max_wal_senders=4
+      - -c
+      - max_replication_slots=4
+      - -c
+      - hot_standby=on
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cqrs_user -d cqrs_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - cqrs-net
+
+  pg-replica:
+    image: postgres:17
+    container_name: pg-replica
+    ports:
+      - "5433:5432"
+    environment:
+      PGUSER: replicator
+      PGPASSWORD: replicator_pass
+    depends_on:
+      pg-primary:
+        condition: service_healthy
+    volumes:
+      - pg-replica-data:/var/lib/postgresql/data
+    entrypoint: >
+      bash -c "
+        if [ ! -f /var/lib/postgresql/data/PG_VERSION ]; then
+          rm -rf /var/lib/postgresql/data/*
+          pg_basebackup -h pg-primary -U replicator -D /var/lib/postgresql/data -Fp -Xs -P -R
+          touch /var/lib/postgresql/data/standby.signal
+          cat >> /var/lib/postgresql/data/postgresql.auto.conf <<EOF
+      primary_conninfo = 'host=pg-primary port=5432 user=replicator password=replicator_pass'
+      EOF
+          chown -R postgres:postgres /var/lib/postgresql/data
+        fi
+        exec docker-entrypoint.sh postgres
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U replicator"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - cqrs-net
+
+  app:
+    container_name: app
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      WRITE_DB_URL: jdbc:postgresql://pg-primary:5432/cqrs_db
+      READ_DB_URL: jdbc:postgresql://pg-replica:5432/cqrs_db
+      DB_USERNAME: cqrs_user
+      DB_PASSWORD: cqrs_pass
+    depends_on:
+      pg-primary:
+        condition: service_healthy
+      pg-replica:
+        condition: service_healthy
+    networks:
+      - cqrs-net
+
+volumes:
+  pg-primary-data:
+  pg-replica-data:
+
+networks:
+  cqrs-net:
+    driver: bridge
