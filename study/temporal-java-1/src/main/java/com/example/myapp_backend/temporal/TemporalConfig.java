@@ -45,11 +45,15 @@ public class TemporalConfig {
     }
 
     @Bean
-    public WorkerFactory workerFactory(WorkflowClient workflowClient, OrderActivities orderActivities) {
+    public WorkerFactory workerFactory(WorkflowClient workflowClient,
+                                         OrderActivities orderActivities,
+                                         InventoryActivities inventoryActivities,
+                                         PaymentActivities paymentActivities,
+                                         NotificationActivities notificationActivities) {
         this.workerFactory = WorkerFactory.newInstance(workflowClient);
         Worker worker = workerFactory.newWorker(TASK_QUEUE);
         worker.registerWorkflowImplementationTypes(OrderSagaWorkflowImpl.class);
-        worker.registerActivitiesImplementations(orderActivities);
+        worker.registerActivitiesImplementations(orderActivities, inventoryActivities, paymentActivities, notificationActivities);
         workerFactory.start();
         return workerFactory;
     }

@@ -21,7 +21,10 @@ public class OrderSagaWorkflowImpl implements OrderSagaWorkflow {
                     .build())
             .build();
 
-    private final OrderActivities activities = Workflow.newActivityStub(OrderActivities.class, options);
+    private final InventoryActivities inventoryActivities = Workflow.newActivityStub(InventoryActivities.class, options);
+    private final PaymentActivities paymentActivities = Workflow.newActivityStub(PaymentActivities.class, options);
+    private final OrderActivities orderActivities = Workflow.newActivityStub(OrderActivities.class, options);
+    private final NotificationActivities notificationActivities = Workflow.newActivityStub(NotificationActivities.class, options);
 
     @Override
     public Order executeCheckout(String orderId, CheckoutRequest request) {
@@ -29,32 +32,35 @@ public class OrderSagaWorkflowImpl implements OrderSagaWorkflow {
 
         try {
             // Step 1: Reserve Inventory
-            activities.reserveInventory(orderId, request.getItems(), request.isSimulateInventoryFailure());
-            saga.addCompensation(() -> activities.releaseInventory(orderId, request.getItems()));
+            orderActivities.updateOrderStatus(orderId, Order.OrderStatus.RESERVING_INVENTORY);
+            inventoryActivities.reserveInventory(orderId, request.getItems(), request.isSimulateInventoryFailure());
+            saga.addCompensation(() -> inventoryActivities.releaseInventory(orderId, request.getItems()));
 
             // Step 2: Process Payment
-            double totalAmount = request.getItems().stream()
+            orderActivities.updateOrderStatus(orderId, Order.OrderStatus.PAYMENT_PROCESSING);
+            double totalAmount = request.getItems() != null ? request.getItems().stream()
                     .mapToDouble(i -> i.getUnitPrice() * i.getQuantity())
-                    .sum();
-            String paymentId = activities.processPayment(orderId, totalAmount, request.isSimulatePaymentFailure());
-            saga.addCompensation(() -> activities.refundPayment(orderId, paymentId));
+                    .sum() : 0.0;
+            String paymentId = paymentActivities.processPayment(orderId, totalAmount, request.isSimulatePaymentFailure());
+            orderActivities.recordPayment(orderId, paymentId);
+            saga.addCompensation(() -> paymentActivities.refundPayment(orderId, paymentId));
 
             // Step 3: Confirm Order
-            activities.confirmOrder(orderId);
-            activities.sendNotification(request.getUserId(), orderId,
+            orderActivities.confirmOrder(orderId);
+            notificationActivities.sendNotification(request.getUserId(), orderId,
                     "Order " + orderId + " completed successfully!", "SUCCESS");
 
         } catch (ActivityFailure e) {
             String errorMsg = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
             saga.compensate();
-            activities.failOrder(orderId, errorMsg);
-            activities.sendNotification(request.getUserId(), orderId,
+            orderActivities.failOrder(orderId, errorMsg);
+            notificationActivities.sendNotification(request.getUserId(), orderId,
                     "Order " + orderId + " failed. Reason: " + errorMsg, "ERROR");
         } catch (Exception e) {
             String errorMsg = e.getMessage();
             saga.compensate();
-            activities.failOrder(orderId, errorMsg);
-            activities.sendNotification(request.getUserId(), orderId,
+            orderActivities.failOrder(orderId, errorMsg);
+            notificationActivities.sendNotification(request.getUserId(), orderId,
                     "Order " + orderId + " failed with unexpected error: " + errorMsg, "ERROR");
         }
 
