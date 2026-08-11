@@ -1,0 +1,48 @@
+services:
+  valkey:
+    image: docker.io/valkey/valkey:8.0
+    container_name: valkey
+    ports:
+      - "6379:6379"
+
+  app1:
+    build: .
+    container_name: app1
+    environment:
+      - VALKEY_HOST=valkey
+      - VALKEY_PORT=6379
+      - SERVER_PORT=8080
+    depends_on:
+      - valkey
+
+  app2:
+    build: .
+    container_name: app2
+    environment:
+      - VALKEY_HOST=valkey
+      - VALKEY_PORT=6379
+      - SERVER_PORT=8080
+    depends_on:
+      - valkey
+
+  app3:
+    build: .
+    container_name: app3
+    environment:
+      - VALKEY_HOST=valkey
+      - VALKEY_PORT=6379
+      - SERVER_PORT=8080
+    depends_on:
+      - valkey
+
+  nginx:
+    image: docker.io/library/nginx:alpine
+    container_name: nginx_lb
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro,z
+    depends_on:
+      - app1
+      - app2
+      - app3
