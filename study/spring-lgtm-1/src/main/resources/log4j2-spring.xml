@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="PLAIN_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] [%X{correlationId}] %logger{36} - %msg%n</Property>
+        <Property name="COLOR_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}{FATAL=red blink, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=white} [%t] [%X{correlationId}] %logger{36} - %msg%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="PlainConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PLAIN_PATTERN}" />
+        </Console>
+        <Console name="ColorConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="${COLOR_PATTERN}" disableAnsi="false" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <SpringProfile name="local">
+            <Root level="INFO">
+                <AppenderRef ref="ColorConsole" />
+            </Root>
+        </SpringProfile>
+        <SpringProfile name="!local">
+            <Root level="INFO">
+                <AppenderRef ref="PlainConsole" />
+            </Root>
+        </SpringProfile>
+    </Loggers>
+</Configuration>
