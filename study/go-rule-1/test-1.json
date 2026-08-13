@@ -1,0 +1,337 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "type": "inputNode",
+      "content": {
+        "schema": ""
+      },
+      "id": "4e7e6bb9-f128-41e7-8cc5-b9d79670b96a",
+      "name": "Request",
+      "position": {
+        "x": 70,
+        "y": 160
+      }
+    },
+    {
+      "type": "decisionTableNode",
+      "content": {
+        "hitPolicy": "first",
+        "rules": [
+          {
+            "_id": "D8T0xuyYLC",
+            "Yi49Ln4-V_": "\"green\"",
+            "nd30YgUKve": "\"INC\",\"LTD\",\"LLC\""
+          },
+          {
+            "_id": "Ewgtm_21qr",
+            "Yi49Ln4-V_": "\"amber\"",
+            "nd30YgUKve": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "nd30YgUKve",
+            "name": "Company Type",
+            "field": "company.type"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Yi49Ln4-V_",
+            "name": "Flag CompanyType",
+            "field": "flag.companyType"
+          }
+        ],
+        "passThrough": false,
+        "inputField": null,
+        "outputPath": null,
+        "executionMode": "single"
+      },
+      "id": "d6925cde-b3c9-4b7f-8652-7380dacea6a4",
+      "name": "Company Type",
+      "position": {
+        "x": 380,
+        "y": 270
+      }
+    },
+    {
+      "type": "decisionTableNode",
+      "content": {
+        "hitPolicy": "first",
+        "rules": [
+          {
+            "_id": "fJxWqBVUNk",
+            "6xj5CMIFv9": "> 1_000_000",
+            "rrW6s3l7vU": "\"green\""
+          },
+          {
+            "_id": "lqBoqkvWHA",
+            "6xj5CMIFv9": "[200_000..1_000_000]",
+            "rrW6s3l7vU": "\"amber\""
+          },
+          {
+            "_id": "YO3K4Q1iuU",
+            "6xj5CMIFv9": "< 200_000",
+            "rrW6s3l7vU": "\"red\""
+          },
+          {
+            "_id": "SY7uwJEPqS",
+            "6xj5CMIFv9": "",
+            "rrW6s3l7vU": "\"red\""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "6xj5CMIFv9",
+            "name": "Turnover (LY)",
+            "field": "company.turnover"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "rrW6s3l7vU",
+            "name": "Flag Turnover",
+            "field": "flag.turnover"
+          }
+        ],
+        "passThrough": false,
+        "inputField": null,
+        "outputPath": null,
+        "executionMode": "single"
+      },
+      "id": "46fbad36-4bbe-44ac-833f-d30e0d37d8d7",
+      "name": "Turnover",
+      "position": {
+        "x": 380,
+        "y": 160
+      }
+    },
+    {
+      "type": "decisionTableNode",
+      "content": {
+        "hitPolicy": "first",
+        "rules": [
+          {
+            "_id": "TOi2qECISd",
+            "I493u7jDPg": "\"green\"",
+            "bGOSakKon0": "",
+            "z87lDk-Xar": "\"US\",\"IE\",\"GB\",\"CA\""
+          },
+          {
+            "_id": "aGPqCdh2tU",
+            "I493u7jDPg": "\"amber\"",
+            "bGOSakKon0": "true",
+            "z87lDk-Xar": ""
+          },
+          {
+            "_id": "VYiuLkrLWb",
+            "I493u7jDPg": "\"red\"",
+            "bGOSakKon0": "",
+            "z87lDk-Xar": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "z87lDk-Xar",
+            "name": "Company Country",
+            "field": "company.country"
+          },
+          {
+            "id": "bGOSakKon0",
+            "name": "Company IsEU",
+            "field": "company.isEu"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "I493u7jDPg",
+            "name": "Flag Country",
+            "field": "flag.country"
+          }
+        ],
+        "passThrough": false,
+        "inputField": null,
+        "outputPath": null,
+        "executionMode": "single"
+      },
+      "id": "abaaa033-5516-440c-b211-35f1d616ad9f",
+      "name": "Country",
+      "position": {
+        "x": 380,
+        "y": 50
+      }
+    },
+    {
+      "type": "decisionTableNode",
+      "content": {
+        "hitPolicy": "first",
+        "rules": [
+          {
+            "_id": "P0RQ3NFWfc",
+            "AczIUwvClr": "",
+            "KsBwLhAedP": "> 0",
+            "QJttqyV2FB": "",
+            "ek5q9WgLL9": "\"red\"",
+            "iFQl1CKB5S": ""
+          },
+          {
+            "_id": "UGrT2iHE61",
+            "AczIUwvClr": "> 0",
+            "KsBwLhAedP": "",
+            "QJttqyV2FB": "",
+            "ek5q9WgLL9": "\"red\"",
+            "iFQl1CKB5S": ""
+          },
+          {
+            "_id": "SBBO_aWujh",
+            "AczIUwvClr": "",
+            "KsBwLhAedP": "",
+            "QJttqyV2FB": "> 1",
+            "ek5q9WgLL9": "\"amber\"",
+            "iFQl1CKB5S": ""
+          },
+          {
+            "_id": "N2jO9BnXHY",
+            "AczIUwvClr": "",
+            "KsBwLhAedP": "",
+            "QJttqyV2FB": "",
+            "ek5q9WgLL9": "\"green\"",
+            "iFQl1CKB5S": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "AczIUwvClr",
+            "name": "Red",
+            "field": "red"
+          },
+          {
+            "id": "QJttqyV2FB",
+            "name": "Amber",
+            "field": "amber"
+          },
+          {
+            "id": "iFQl1CKB5S",
+            "name": "Green",
+            "field": "green"
+          },
+          {
+            "id": "KsBwLhAedP",
+            "name": "Critical",
+            "field": "critical"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "ek5q9WgLL9",
+            "name": "Overall",
+            "field": "overall"
+          }
+        ],
+        "passThrough": false,
+        "inputField": null,
+        "outputPath": null,
+        "executionMode": "single"
+      },
+      "id": "86ce04c9-b4dd-4513-ae2b-7f585ceb224a",
+      "name": "Overall",
+      "position": {
+        "x": 760,
+        "y": 30
+      }
+    },
+    {
+      "type": "outputNode",
+      "content": {
+        "schema": ""
+      },
+      "id": "95aa8f3c-f371-4e48-beb3-0b5775d2a814",
+      "name": "Response",
+      "position": {
+        "x": 1040,
+        "y": 135
+      }
+    },
+    {
+      "type": "functionNode",
+      "content": {
+        "source": "import zen from 'zen';\n\n// /** @type {Handler} **/\n// export const handler = async (input) => {\n//   return input;\n// };\n\n/**\n* @param {import('gorules').Input} input\n* @param {{\n*  moment: import('dayjs')\n*  env: Record<string, any>\n* }} helpers\n*/\nexport const handler = (input, { moment, env }) => {\n  const count = (flag) => Object.values(input?.flag || {}).reduce((acc, curr) => {\n    if (curr === flag) return acc + 1;\n    return acc;\n  }, 0);\n\n  return {\n    critical: count('critical'),\n    red: count('red'),\n    amber: count('amber'),\n    green: count('green')\n  };\n}"
+      },
+      "id": "b5bab3cd-e28c-4814-a9f2-9a948b03f25c",
+      "name": "mapper",
+      "position": {
+        "x": 740,
+        "y": -60
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "3e749d7f-97d5-45c9-917f-20ae877c3bde",
+      "sourceId": "4e7e6bb9-f128-41e7-8cc5-b9d79670b96a",
+      "targetId": "abaaa033-5516-440c-b211-35f1d616ad9f",
+      "type": "edge"
+    },
+    {
+      "id": "d00252c1-9a54-4599-940c-c9c1c3bb6800",
+      "sourceId": "4e7e6bb9-f128-41e7-8cc5-b9d79670b96a",
+      "targetId": "46fbad36-4bbe-44ac-833f-d30e0d37d8d7",
+      "type": "edge"
+    },
+    {
+      "id": "f5be27b5-4eea-40f4-abce-31081a0caf65",
+      "sourceId": "4e7e6bb9-f128-41e7-8cc5-b9d79670b96a",
+      "targetId": "d6925cde-b3c9-4b7f-8652-7380dacea6a4",
+      "type": "edge"
+    },
+    {
+      "id": "ae341e14-2d25-4941-a42f-eb587c17f9f5",
+      "sourceId": "abaaa033-5516-440c-b211-35f1d616ad9f",
+      "targetId": "95aa8f3c-f371-4e48-beb3-0b5775d2a814",
+      "type": "edge"
+    },
+    {
+      "id": "3000e420-4846-4f86-8ed2-f595d204672e",
+      "sourceId": "46fbad36-4bbe-44ac-833f-d30e0d37d8d7",
+      "targetId": "95aa8f3c-f371-4e48-beb3-0b5775d2a814",
+      "type": "edge"
+    },
+    {
+      "id": "638c35a9-eef7-4d90-bf1e-58ba10734d98",
+      "sourceId": "d6925cde-b3c9-4b7f-8652-7380dacea6a4",
+      "targetId": "95aa8f3c-f371-4e48-beb3-0b5775d2a814",
+      "type": "edge"
+    },
+    {
+      "id": "822d2eeb-5a9e-4670-b181-4af0ed6dd9b9",
+      "sourceId": "86ce04c9-b4dd-4513-ae2b-7f585ceb224a",
+      "targetId": "95aa8f3c-f371-4e48-beb3-0b5775d2a814",
+      "type": "edge"
+    },
+    {
+      "id": "001825b5-a803-42cb-87c3-e65f7b82065e",
+      "sourceId": "abaaa033-5516-440c-b211-35f1d616ad9f",
+      "type": "edge",
+      "targetId": "b5bab3cd-e28c-4814-a9f2-9a948b03f25c"
+    },
+    {
+      "id": "b9dfb93f-2a12-4339-9c61-52dae2626937",
+      "sourceId": "46fbad36-4bbe-44ac-833f-d30e0d37d8d7",
+      "type": "edge",
+      "targetId": "b5bab3cd-e28c-4814-a9f2-9a948b03f25c"
+    },
+    {
+      "id": "bf2bd729-0fc7-4568-b384-a552d66f3f73",
+      "sourceId": "d6925cde-b3c9-4b7f-8652-7380dacea6a4",
+      "type": "edge",
+      "targetId": "b5bab3cd-e28c-4814-a9f2-9a948b03f25c"
+    },
+    {
+      "id": "0d89bb3c-d53b-438d-842a-3c1255e6cda6",
+      "sourceId": "b5bab3cd-e28c-4814-a9f2-9a948b03f25c",
+      "type": "edge",
+      "targetId": "86ce04c9-b4dd-4513-ae2b-7f585ceb224a"
+    }
+  ]
+}
