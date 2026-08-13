@@ -1,0 +1,35 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: myapp-backend
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      alwaysFailingService:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+      flakyService:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 30
+        waitDurationInOpenState: 5s
+      healthyService:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+  ratelimiter:
+    instances:
+      rateLimitedService:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 0ms
