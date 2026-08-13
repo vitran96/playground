@@ -1,0 +1,37 @@
+### Strategy 1: Standard Read-Through (@Cacheable)
+### First call = cache miss (slow ~1s), second call = cache hit (fast)
+GET http://localhost:8080/api/v1/items/standard
+
+### Strategy 2: Conditional Caching
+### Cached when category != 'uncached' and result is not empty
+GET http://localhost:8080/api/v1/items/conditional?category=electronics
+
+###
+GET http://localhost:8080/api/v1/items/conditional?category=uncached
+
+###
+GET http://localhost:8080/api/v1/items/conditional?category=nonexistent
+
+### Strategy 3: Short-lived TTL (60s)
+GET http://localhost:8080/api/v1/items/short-lived
+
+### Strategy 4: Cache Update / Write-Through (@CachePut)
+PUT http://localhost:8080/api/v1/items/update
+Content-Type: application/json
+
+{"id": 1, "name": "Laptop Pro", "category": "electronics", "price": 1299.99}
+
+### Strategy 5: Cache Eviction (@CacheEvict)
+DELETE http://localhost:8080/api/v1/items/clear
+
+### Strategy 6: Combined Multi-Cache Action (@Caching)
+POST http://localhost:8080/api/v1/items/bulk-update
+Content-Type: application/json
+
+{"id": 2, "name": "Wireless Headphones", "category": "electronics", "price": 199.99}
+
+### Pub/Sub: Publish a message (check app logs for subscriber output)
+POST http://localhost:8080/api/v1/messages/publish
+Content-Type: application/json
+
+{"message": "Item #1 has been updated"}
