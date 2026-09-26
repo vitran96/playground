@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: cqrs_db
     volumes:
       - pg-primary-data:/var/lib/postgresql/data
-      - ./infra/primary/init.sh:/docker-entrypoint-initdb.d/init.sh
+      - ./infra/primary/init.sh:/docker-entrypoint-initdb.d/init.sh:Z
     command:
       - postgres
       - -c
@@ -42,21 +42,17 @@ services:
         condition: service_healthy
     volumes:
       - pg-replica-data:/var/lib/postgresql/data
-    entrypoint: >
+    entrypoint: |
       bash -c "
         if [ ! -f /var/lib/postgresql/data/PG_VERSION ]; then
           rm -rf /var/lib/postgresql/data/*
           pg_basebackup -h pg-primary -U replicator -D /var/lib/postgresql/data -Fp -Xs -P -R
-          touch /var/lib/postgresql/data/standby.signal
-          cat >> /var/lib/postgresql/data/postgresql.auto.conf <<EOF
-      primary_conninfo = 'host=pg-primary port=5432 user=replicator password=replicator_pass'
-      EOF
           chown -R postgres:postgres /var/lib/postgresql/data
         fi
         exec docker-entrypoint.sh postgres
       "
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U replicator"]
+      test: ["CMD-SHELL", "pg_isready -U replicator -d cqrs_db"]
       interval: 5s
       timeout: 5s
       retries: 10

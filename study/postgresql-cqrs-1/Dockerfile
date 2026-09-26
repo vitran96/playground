@@ -1,12 +1,9 @@
-FROM docker.io/library/eclipse-temurin:25-jdk AS builder
+FROM docker.io/library/gradle:9.7.0-jdk25 AS builder
 WORKDIR /app
 
-COPY gradle gradle
-COPY gradlew build.gradle settings.gradle ./
-RUN chmod +x gradlew
-
+COPY build.gradle settings.gradle ./
 COPY src src
-RUN ./gradlew bootJar --no-daemon -x test
+RUN gradle bootJar --no-daemon -x test
 
 FROM docker.io/library/eclipse-temurin:25-jre
 WORKDIR /app
