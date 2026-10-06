@@ -9,3 +9,7 @@
 5. `exec` into and run `curl localhost` : `kubectl exec -n lab web -- curl localhost:80` / `kubectl exec -n lab -it web -- /bin/sh`
 6. `port-forward` to 8080 and open it from machine : `kubectl port-forward -n lab web 8080:80`
 7. Delete pod and `get pods` again : `kubectl delete -f pod1.yml` (gone 4ever since there is no relicaset)
+
+## Exercise 2
+
+1.
