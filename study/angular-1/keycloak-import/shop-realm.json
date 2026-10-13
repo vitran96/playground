@@ -1,0 +1,109 @@
+{
+  "realm": "shop",
+  "displayName": "Shop (local practice)",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "roles": {
+    "realm": [
+      { "name": "ADMIN", "description": "Can create, edit and delete products" },
+      { "name": "USER", "description": "Can view products" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "product-admin",
+      "name": "Product Admin (Angular SPA)",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "implicitFlowEnabled": false,
+      "rootUrl": "http://localhost:4200",
+      "baseUrl": "/",
+      "redirectUris": ["http://localhost:4200/*"],
+      "webOrigins": ["http://localhost:4200"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:4200/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience product-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "product-api",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "product-service",
+      "name": "Backend service (client credentials practice)",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "clientAuthenticatorType": "client-secret",
+      "secret": "product-service-secret",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true
+    }
+  ],
+  "users": [
+    {
+      "username": "alice",
+      "email": "alice@shop.test",
+      "firstName": "Alice",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "alice123", "temporary": false }],
+      "realmRoles": ["ADMIN", "USER"]
+    },
+    {
+      "username": "bob",
+      "email": "bob@shop.test",
+      "firstName": "Bob",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "bob123", "temporary": false }],
+      "realmRoles": ["USER"]
+    },
+    {
+      "username": "carol",
+      "email": "carol@shop.test",
+      "firstName": "Carol",
+      "lastName": "NoRoles",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "carol123", "temporary": false }],
+      "realmRoles": []
+    },
+    {
+      "username": "dave",
+      "email": "dave@shop.test",
+      "firstName": "Dave",
+      "lastName": "Disabled",
+      "enabled": false,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "dave123", "temporary": false }],
+      "realmRoles": ["USER"]
+    },
+    {
+      "username": "service-account-product-service",
+      "enabled": true,
+      "serviceAccountClientId": "product-service",
+      "realmRoles": ["USER"]
+    }
+  ]
+}
