@@ -7,6 +7,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 // NOTE: is this like interceptor or injection?
 export const appConfig: ApplicationConfig = {
@@ -14,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding())
     , provideHttpClient(
       // add authInterceptor and errorInterceptor
-      withInterceptors([])
+      withInterceptors([authInterceptor, errorInterceptor])
     )
     // NOTE: required by UI framework like Material UI / NgZorro
     , provideAnimationsAsync()
