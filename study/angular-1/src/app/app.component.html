@@ -1,16 +1,1 @@
-<mat-drawer-container class="menu-container">
-  <mat-drawer mode="side" opened class="menu-drawer">
-    <h1>Product Admin</h1>
-    <mat-list>
-      <!-- TODO: should disable button if  -->
-      <mat-list-item><button mat-flat-button color="primary" style="width: 100%">Products</button></mat-list-item>
-      <mat-list-item><button mat-flat-button color="primary" style="width: 100%">Profile</button></mat-list-item>
-    </mat-list>
-  </mat-drawer>
-  <mat-drawer-content style="padding: 1rem">
-    <div>
-      <router-outlet />
-    </div>
-  </mat-drawer-content>
-</mat-drawer-container>
-
+<router-outlet />

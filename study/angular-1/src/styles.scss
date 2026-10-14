@@ -1,4 +1,35 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@include mat.core();
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+$my-primary: mat.define-palette(mat.$light-blue-palette);
+$my-accent: mat.define-palette(mat.$pink-palette);
+$my-theme: mat.define-light-theme((
+  color: (
+    primary: $my-primary,
+    accent: $my-accent,
+  )
+));
+
+// Apply the full theme
+@include mat.all-component-themes($my-theme);
+
+// Extract background color using M2 map helpers:
+$background-map: map-get($my-theme, background);
+$bg-color: map-get($background-map, background);
+
+// NOTE: below is for Angular 18+
+// html {
+//   @include mat.theme((
+//     color: mat.$azure-palette,
+//     typography: Roboto,
+//     density: 0,
+//   ));
+// }

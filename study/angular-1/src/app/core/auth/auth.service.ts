@@ -11,9 +11,19 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     const key: string | null = this.localStorageService.getItem(AUTH_KEY);
-
-    // NOTE: find better syntax
-    // should use 4 sword s'l'll
     return key ? true : false;
+  }
+
+  login(): void {
+    this.localStorageService.setItem(AUTH_KEY, 'token');
+  }
+
+  getToken(): string {
+    const token = this.localStorageService.getItem<string>(AUTH_KEY);
+    return token ?? "";
+  }
+
+  logout(): void {
+    this.localStorageService.removeItem(AUTH_KEY);
   }
 }
