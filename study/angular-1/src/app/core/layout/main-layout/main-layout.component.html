@@ -2,9 +2,35 @@
   <mat-sidenav class="menu-drawer" mode="side" opened fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0">
     <h1>Product Admin</h1>
     <mat-list>
-      <mat-list-item><button mat-flat-button color="primary" style="width: 100%">Products</button></mat-list-item>
+      <!-- <mat-list-item><button mat-flat-button color="primary" style="width: 100%">Products</button></mat-list-item>
       <mat-list-item><button mat-flat-button color="primary" style="width: 100%">Profile</button></mat-list-item>
-      <mat-list-item><button mat-flat-button color="primary" style="width: 100%" (click)="logout()">Logout</button></mat-list-item>
+      <mat-list-item><button mat-flat-button color="primary" style="width: 100%" (click)="logout()">Logout</button></mat-list-item> -->
+      @for (item of navMenuItems; track $index) {
+        <mat-list-item>
+          @if (item.type === 'routing') {
+            <a
+              mat-flat-button
+              style="width: 100%"
+              [routerLink]="item.route"
+              [routerLinkActiveOptions]="item.routeOptions"
+              routerLinkActive
+              #rla="routerLinkActive"
+              [color]="rla.isActive ? 'accent' : 'primary'"
+              >
+              {{ item.label }}
+            </a>
+          } @else {
+            <button
+              mat-flat-button
+              color="primary"
+              style="width: 100%"
+              (click)="item.onClick()"
+              >
+              {{ item.label }}
+            </button>
+          }
+        </mat-list-item>
+      }
     </mat-list>
   </mat-sidenav>
   <mat-sidenav-content class="site-content">

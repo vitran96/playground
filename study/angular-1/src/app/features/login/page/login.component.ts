@@ -1,6 +1,6 @@
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from './../../../../core/auth/auth.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 
