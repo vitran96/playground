@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class NotFoundComponent {
   private router = inject(Router)
   redirectBack() {
-    // this.router.
+    this.router.navigate(['/']);
   }
 
 }

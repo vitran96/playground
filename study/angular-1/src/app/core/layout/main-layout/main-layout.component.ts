@@ -19,6 +19,10 @@ export class MainLayoutComponent {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'], {
+      queryParams: {
+        returnUrl: this.router.url,
+      }
+    });
   }
 }
