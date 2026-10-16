@@ -1,0 +1,20 @@
+<!-- show as card -->
+<!-- on click, open detail modal /:id -->
+<!--   on open, should we fetch detail with API or get from list? and which way is better to reopen the dialog with URL? -->
+<!-- on hover, make card bigger -->
+<div>
+  @if (product(); as productData) {
+    <h3>{{ productData.name }}</h3>
+    <!-- id and createdAt small, inline with name -->
+    <span>{{ productData.id }}</span>
+    <span>{{ productData.createdAt }}</span>
+    <!-- status in ships -->
+    <span>{{ productData.status }}</span>
+    <span>{{ productData.sku }}</span>
+    <!-- price & stock same line -->
+    <span>{{ productData.price }}</span>
+    <span>{{ productData.stock }}</span>
+    <!-- tags is a list. so show it in chips -->
+    <span>{{ productData.tags }}</span>
+  }
+</div>

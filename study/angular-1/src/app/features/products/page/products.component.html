@@ -1,1 +1,10 @@
 <h2>Products</h2>
+
+@if (productsData(); as products) {
+  <!-- TODO: flex div of item, max 5 each row. render using product-card -->
+  @for (item of products.items; track $index) {
+    <app-product-card [product]="item"></app-product-card>
+  }
+} @else {
+  <p>Loading...</p>
+}
