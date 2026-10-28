@@ -1,0 +1,52 @@
+:root {
+  --pico-primary: #0066cc;
+  --pico-primary-hover: #0052a3;
+  --pico-primary-focus: rgba(0, 102, 204, 0.25);
+}
+
+article {
+  max-width: 420px;
+  margin: 3rem auto;
+}
+
+.realm-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  background-color: var(--pico-primary);
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.msg {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--pico-border-radius);
+  margin-bottom: 1rem;
+}
+
+.msg-error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+.msg-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.msg-warning {
+  background-color: #fff8e1;
+  color: #f57f17;
+  border: 1px solid #ffe082;
+}
+
+.msg-info {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #90caf9;
+}

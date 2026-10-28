@@ -1,0 +1,139 @@
+{
+  "realm": "central",
+  "displayName": "Demo Broker",
+  "enabled": true,
+  "loginTheme": "demo-central",
+  "registrationAllowed": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "internal_user",
+        "description": "Internal staff user"
+      },
+      {
+        "name": "external_resolver",
+        "description": "External partner resolver"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "demo-app-a1",
+      "name": "Demo App Arch 1",
+      "secret": "a1-secret",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/auth/a1/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3000/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "multivalued": "true",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "idp",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "identity_provider",
+            "claim.name": "idp",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "internal",
+      "displayName": "Staff (intranet sign-in)",
+      "providerId": "oidc",
+      "enabled": true,
+      "trustEmail": true,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "clientId": "central-broker",
+        "clientSecret": "central-internal-secret",
+        "clientAuthMethod": "client_secret_post",
+        "authorizationUrl": "http://localhost:8081/realms/internal/protocol/openid-connect/auth",
+        "tokenUrl": "http://kc-internal:8080/realms/internal/protocol/openid-connect/token",
+        "jwksUrl": "http://kc-internal:8080/realms/internal/protocol/openid-connect/certs",
+        "logoutUrl": "http://localhost:8081/realms/internal/protocol/openid-connect/logout",
+        "issuer": "http://localhost:8081/realms/internal",
+        "useJwksUrl": "true",
+        "validateSignature": "true",
+        "pkceEnabled": "true",
+        "pkceMethod": "S256",
+        "defaultScope": "openid profile email",
+        "syncMode": "FORCE"
+      }
+    },
+    {
+      "alias": "external",
+      "displayName": "Partner sign-in",
+      "providerId": "oidc",
+      "enabled": true,
+      "trustEmail": true,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "clientId": "central-broker",
+        "clientSecret": "central-external-secret",
+        "clientAuthMethod": "client_secret_post",
+        "authorizationUrl": "http://localhost:8082/realms/external/protocol/openid-connect/auth",
+        "tokenUrl": "http://kc-external:8080/realms/external/protocol/openid-connect/token",
+        "jwksUrl": "http://kc-external:8080/realms/external/protocol/openid-connect/certs",
+        "logoutUrl": "http://localhost:8082/realms/external/protocol/openid-connect/logout",
+        "issuer": "http://localhost:8082/realms/external",
+        "useJwksUrl": "true",
+        "validateSignature": "true",
+        "pkceEnabled": "true",
+        "pkceMethod": "S256",
+        "defaultScope": "openid profile email",
+        "syncMode": "FORCE"
+      }
+    }
+  ],
+  "identityProviderMappers": [
+    {
+      "name": "internal-gets-internal_user",
+      "identityProviderAlias": "internal",
+      "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+      "config": {
+        "role": "internal_user",
+        "syncMode": "INHERIT"
+      }
+    },
+    {
+      "name": "external-gets-external_resolver",
+      "identityProviderAlias": "external",
+      "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+      "config": {
+        "role": "external_resolver",
+        "syncMode": "INHERIT"
+      }
+    }
+  ]
+}

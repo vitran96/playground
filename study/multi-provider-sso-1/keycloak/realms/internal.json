@@ -1,0 +1,76 @@
+{
+  "realm": "internal",
+  "displayName": "Corp Intranet",
+  "enabled": true,
+  "loginTheme": "demo-internal",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "users": [
+    {
+      "username": "alice",
+      "firstName": "Alice",
+      "lastName": "Nguyen",
+      "email": "alice@corp.example",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "bob",
+      "firstName": "Bob",
+      "lastName": "Tran",
+      "email": "bob@corp.example",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "central-broker",
+      "name": "Central Broker",
+      "secret": "central-internal-secret",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/realms/central/broker/internal/endpoint"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    },
+    {
+      "clientId": "demo-app-a2",
+      "name": "Demo App Arch 2",
+      "secret": "a2-internal-secret",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/auth/a2/internal/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3000/*"
+      }
+    }
+  ]
+}
