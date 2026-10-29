@@ -26,14 +26,18 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "redirectUris": [
-        "http://localhost:3000/auth/a1/callback"
+        "http://localhost:3000/*",
+        "http://localhost:8083/*",
+        "http://localhost:8084/*",
+        "http://localhost:8085/*",
+        "http://localhost:8086/*"
       ],
       "webOrigins": [
-        "http://localhost:3000"
+        "*"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:3000/*"
+        "post.logout.redirect.uris": "+"
       },
       "protocolMappers": [
         {

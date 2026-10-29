@@ -51,3 +51,42 @@ services:
       kc-central: { condition: service_healthy }
       kc-internal: { condition: service_healthy }
       kc-external: { condition: service_healthy }
+
+  traefik-internal:
+    image: traefik:v3.1
+    command:
+      - "--entrypoints.web.address=:80"
+      - "--providers.file.filename=/etc/traefik/dynamic.yaml"
+      - "--providers.file.watch=false"
+    ports: ["8083:80"]
+    volumes:
+      - ./traefik/internal.yaml:/etc/traefik/dynamic.yaml:ro,z
+    depends_on:
+      app: { condition: service_started }
+
+  traefik-external:
+    image: traefik:v3.1
+    command:
+      - "--entrypoints.web.address=:80"
+      - "--providers.file.filename=/etc/traefik/dynamic.yaml"
+      - "--providers.file.watch=false"
+    ports: ["8084:80"]
+    volumes:
+      - ./traefik/external.yaml:/etc/traefik/dynamic.yaml:ro,z
+    depends_on:
+      app: { condition: service_started }
+
+  traefik-single:
+    image: traefik:v3.1
+    command:
+      - "--entrypoints.internal.address=:8085"
+      - "--entrypoints.external.address=:8086"
+      - "--providers.file.filename=/etc/traefik/dynamic.yaml"
+      - "--providers.file.watch=false"
+    ports:
+      - "8085:8085"
+      - "8086:8086"
+    volumes:
+      - ./traefik/single.yaml:/etc/traefik/dynamic.yaml:ro,z
+    depends_on:
+      app: { condition: service_started }

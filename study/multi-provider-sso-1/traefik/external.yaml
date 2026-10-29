@@ -1,0 +1,17 @@
+http:
+  routers:
+    to-app:
+      rule: "PathPrefix(`/`)"
+      service: "app-service"
+      middlewares:
+        - "external-header"
+  middlewares:
+    external-header:
+      headers:
+        customRequestHeaders:
+          X-Network-Zone: "external"
+  services:
+    app-service:
+      loadBalancer:
+        servers:
+          - url: "http://app:3000"

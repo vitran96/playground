@@ -35,31 +35,43 @@ export async function getDiscovery(provider) {
   return discovery;
 }
 
-export async function startLogin(c, provider) {
+export function getAppBase(c) {
+  const host = c.req.header('x-forwarded-host') || c.req.header('host') || 'localhost:3000';
+  const proto = c.req.header('x-forwarded-proto') || 'http';
+  return `${proto}://${host}`;
+}
+
+export async function startLogin(c, provider, options = {}) {
   const discovery = await getDiscovery(provider);
   const state = crypto.randomBytes(16).toString('hex');
   const nonce = crypto.randomBytes(16).toString('hex');
   const verifier = crypto.randomBytes(32).toString('base64url');
   const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
 
+  const redirectUri = options.redirectUri || (options.callbackPath ? `${getAppBase(c)}${options.callbackPath}` : provider.redirectUri);
+
   const session = c.get('session');
   session.pending = session.pending || {};
-  session.pending[provider.key] = { state, nonce, verifier };
+  session.pending[provider.key] = { state, nonce, verifier, redirectUri };
 
   const authUrl = new URL(discovery.authorization_endpoint);
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('client_id', provider.clientId);
-  authUrl.searchParams.set('redirect_uri', provider.redirectUri);
+  authUrl.searchParams.set('redirect_uri', redirectUri);
   authUrl.searchParams.set('scope', 'openid profile email');
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('nonce', nonce);
   authUrl.searchParams.set('code_challenge', challenge);
   authUrl.searchParams.set('code_challenge_method', 'S256');
 
+  if (options.kc_idp_hint) {
+    authUrl.searchParams.set('kc_idp_hint', options.kc_idp_hint);
+  }
+
   return c.redirect(authUrl.toString());
 }
 
-export async function finishLogin(c, provider) {
+export async function finishLogin(c, provider, options = {}) {
   const session = c.get('session');
   const pending = session?.pending?.[provider.key];
   if (!pending) {
@@ -90,10 +102,11 @@ export async function finishLogin(c, provider) {
   }
 
   const discovery = await getDiscovery(provider);
+  const redirectUri = pending.redirectUri || options.redirectUri || provider.redirectUri;
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
     code: query.code,
-    redirect_uri: provider.redirectUri,
+    redirect_uri: redirectUri,
     client_id: provider.clientId,
     client_secret: provider.clientSecret,
     code_verifier: pending.verifier

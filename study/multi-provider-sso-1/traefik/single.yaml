@@ -1,0 +1,15 @@
+http:
+  routers:
+    internal-router:
+      entryPoints: ["internal"]
+      rule: "PathPrefix(`/`)"
+      service: "app-service"
+    external-router:
+      entryPoints: ["external"]
+      rule: "PathPrefix(`/`)"
+      service: "app-service"
+  services:
+    app-service:
+      loadBalancer:
+        servers:
+          - url: "http://app:3000"

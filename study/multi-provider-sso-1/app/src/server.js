@@ -7,6 +7,7 @@ import { getCookie, setCookie } from 'hono/cookie';
 import { config } from './config.js';
 import { arch1Router } from './arch1.js';
 import { arch2Router } from './arch2.js';
+import { archExtraRouter } from './arch_extra.js';
 
 const app = new Hono();
 const sessions = new Map();
@@ -31,6 +32,7 @@ app.use('*', async (c, next) => {
 // Auth & API routers
 app.route('/', arch1Router);
 app.route('/', arch2Router);
+app.route('/', archExtraRouter);
 
 // Frontend assets & routes served directly by Hono
 const indexHtml = fs.readFileSync(path.resolve('public/index.html'), 'utf-8');
@@ -41,7 +43,17 @@ app.get('/app.js', (c) => {
   return c.body(appJs);
 });
 
-for (const route of ['/', '/architecture-1', '/architecture-2']) {
+for (const route of [
+  '/',
+  '/architecture-1',
+  '/architecture-2',
+  '/architecture-3',
+  '/architecture-4',
+  '/architecture-5',
+  '/architecture-5/internal',
+  '/architecture-6',
+  '/architecture-7'
+]) {
   app.get(route, (c) => c.html(indexHtml));
 }
 
