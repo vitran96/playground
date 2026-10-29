@@ -2,16 +2,18 @@ import { html, render, useState, useEffect } from 'https://unpkg.com/htm@3/preac
 
 function Nav({ currentPath, navigate }) {
   return html`
-    <nav class="container">
-      <ul>
-        <li><strong>OIDC Demo</strong></li>
-      </ul>
-      <ul>
-        <li><a href="/" onClick=${(e) => { e.preventDefault(); navigate('/'); }} class=${currentPath === '/' ? 'contrast' : ''}>Home</a></li>
-        <li><a href="/architecture-1" onClick=${(e) => { e.preventDefault(); navigate('/architecture-1'); }} class=${currentPath === '/architecture-1' ? 'contrast' : ''}>Architecture 1</a></li>
-        <li><a href="/architecture-2" onClick=${(e) => { e.preventDefault(); navigate('/architecture-2'); }} class=${currentPath === '/architecture-2' ? 'contrast' : ''}>Architecture 2</a></li>
-      </ul>
-    </nav>
+    <header class="site-header">
+      <nav class="container">
+        <ul>
+          <li><strong>OIDC Demo</strong></li>
+        </ul>
+        <ul>
+          <li><a href="/" onClick=${(e) => { e.preventDefault(); navigate('/'); }} class=${currentPath === '/' ? 'contrast' : ''}>Home</a></li>
+          <li><a href="/architecture-1" onClick=${(e) => { e.preventDefault(); navigate('/architecture-1'); }} class=${currentPath === '/architecture-1' ? 'contrast' : ''}>Architecture 1</a></li>
+          <li><a href="/architecture-2" onClick=${(e) => { e.preventDefault(); navigate('/architecture-2'); }} class=${currentPath === '/architecture-2' ? 'contrast' : ''}>Architecture 2</a></li>
+        </ul>
+      </nav>
+    </header>
   `;
 }
 
@@ -373,6 +375,11 @@ function App() {
       <main>
         ${screen}
       </main>
+      <footer class="site-footer" style="margin-top: 3rem; padding: 1.5rem 0; text-align: center;">
+        <div class="container">
+          <small>OIDC Multi-Provider Architecture Demo</small>
+        </div>
+      </footer>
     </div>
   `;
 }

@@ -1,10 +1,63 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OIDC architecture demo</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <style>
+    :root, [data-theme="light"] {
+      color-scheme: light;
+      --pico-background-color: #ffffff;
+      --pico-primary: #393939;
+      --pico-secondary: #7E6C39;
+      --chart-color: #7E6C39;
+    }
+    body {
+      background-color: #ffffff;
+    }
+    header.site-header, .sidebar, footer.site-footer {
+      background-color: #393939;
+      color: #ffffff;
+    }
+    header.site-header a, footer.site-footer a {
+      color: #ffffff;
+    }
+    header.site-header a:hover, footer.site-footer a:hover {
+      color: #d1d5db;
+    }
+    button, [role="button"], input[type="submit"], input[type="button"],
+    button.secondary, [role="button"].secondary {
+      --pico-primary-background: #7E6C39;
+      --pico-primary-border: #7E6C39;
+      --pico-primary-hover-background: #695a30;
+      --pico-primary-hover-border: #695a30;
+      --pico-secondary-background: #7E6C39;
+      --pico-secondary-border: #7E6C39;
+      background-color: #7E6C39;
+      border-color: #7E6C39;
+      color: #ffffff;
+    }
+    button:hover, [role="button"]:hover, input[type="submit"]:hover, input[type="button"]:hover,
+    button.secondary:hover, [role="button"].secondary:hover {
+      background-color: #695a30;
+      border-color: #695a30;
+      color: #ffffff;
+    }
+    button.outline, [role="button"].outline {
+      background-color: transparent;
+      color: #7E6C39;
+      border-color: #7E6C39;
+    }
+    button.outline:hover, [role="button"].outline:hover {
+      background-color: #7E6C39;
+      border-color: #7E6C39;
+      color: #ffffff;
+    }
+    .chart, [data-chart] {
+      color: #7E6C39;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
