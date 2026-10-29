@@ -35,15 +35,16 @@ export async function getDiscovery(provider) {
   return discovery;
 }
 
-export async function startLogin(req, res, provider) {
+export async function startLogin(c, provider) {
   const discovery = await getDiscovery(provider);
   const state = crypto.randomBytes(16).toString('hex');
   const nonce = crypto.randomBytes(16).toString('hex');
   const verifier = crypto.randomBytes(32).toString('base64url');
   const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
 
-  req.session.pending = req.session.pending || {};
-  req.session.pending[provider.key] = { state, nonce, verifier };
+  const session = c.get('session');
+  session.pending = session.pending || {};
+  session.pending[provider.key] = { state, nonce, verifier };
 
   const authUrl = new URL(discovery.authorization_endpoint);
   authUrl.searchParams.set('response_type', 'code');
@@ -55,32 +56,34 @@ export async function startLogin(req, res, provider) {
   authUrl.searchParams.set('code_challenge', challenge);
   authUrl.searchParams.set('code_challenge_method', 'S256');
 
-  return res.redirect(authUrl.toString());
+  return c.redirect(authUrl.toString());
 }
 
-export async function finishLogin(req, provider) {
-  const pending = req.session.pending?.[provider.key];
+export async function finishLogin(c, provider) {
+  const session = c.get('session');
+  const pending = session?.pending?.[provider.key];
   if (!pending) {
     const err = new Error('no login in progress for this provider');
     err.status = 400;
     throw err;
   }
 
-  if (req.query.state !== pending.state) {
+  const query = c.req.query();
+  if (query.state !== pending.state) {
     const err = new Error('state mismatch');
     err.status = 400;
     throw err;
   }
 
-  delete req.session.pending[provider.key];
+  delete session.pending[provider.key];
 
-  if (req.query.error) {
-    const err = new Error(req.query.error_description || req.query.error);
+  if (query.error) {
+    const err = new Error(query.error_description || query.error);
     err.status = 400;
     throw err;
   }
 
-  if (!req.query.code) {
+  if (!query.code) {
     const err = new Error('missing authorization code');
     err.status = 400;
     throw err;
@@ -89,7 +92,7 @@ export async function finishLogin(req, provider) {
   const discovery = await getDiscovery(provider);
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
-    code: req.query.code,
+    code: query.code,
     redirect_uri: provider.redirectUri,
     client_id: provider.clientId,
     client_secret: provider.clientSecret,

@@ -1,44 +1,57 @@
+import fs from 'node:fs';
 import path from 'node:path';
-import express from 'express';
-import session from 'express-session';
+import crypto from 'node:crypto';
+import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
+import { getCookie, setCookie } from 'hono/cookie';
 import { config } from './config.js';
 import { arch1Router } from './arch1.js';
 import { arch2Router } from './arch2.js';
 
-const app = express();
+const app = new Hono();
+const sessions = new Map();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use(
-  session({
-    name: 'demo.sid',
-    secret: config.sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
+// Session middleware
+app.use('*', async (c, next) => {
+  let sid = getCookie(c, 'demo.sid');
+  if (!sid || !sessions.has(sid)) {
+    sid = crypto.randomUUID();
+    sessions.set(sid, {});
+    setCookie(c, 'demo.sid', sid, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'Lax',
+      path: '/',
       secure: false
-    }
-  })
-);
-
-app.use(express.static(path.resolve('public')));
-app.use(arch1Router);
-app.use(arch2Router);
-
-app.get(['/', '/architecture-1', '/architecture-2'], (req, res) => {
-  res.sendFile(path.resolve('public/index.html'));
+    });
+  }
+  c.set('session', sessions.get(sid));
+  await next();
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
+// Auth & API routers
+app.route('/', arch1Router);
+app.route('/', arch2Router);
+
+// Frontend assets & routes served directly by Hono
+const indexHtml = fs.readFileSync(path.resolve('public/index.html'), 'utf-8');
+const appJs = fs.readFileSync(path.resolve('public/app.js'), 'utf-8');
+
+app.get('/app.js', (c) => {
+  c.header('Content-Type', 'text/javascript; charset=utf-8');
+  return c.body(appJs);
+});
+
+for (const route of ['/', '/architecture-1', '/architecture-2']) {
+  app.get(route, (c) => c.html(indexHtml));
+}
+
+// Error handler
+app.onError((err, c) => {
   const status = err.status || 500;
-  if (req.path.startsWith('/api/')) {
-    return res.status(status).json({ error: err.message });
+  if (c.req.path.startsWith('/api/')) {
+    return c.json({ error: err.message }, status);
   }
-  res.status(status).send(`<!doctype html>
+  return c.html(`<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -52,9 +65,9 @@ app.use((err, req, res, next) => {
     <footer><a role="button" href="/">Back to Home</a></footer>
   </article>
 </body>
-</html>`);
+</html>`, status);
 });
 
-app.listen(config.port, () => {
+serve({ fetch: app.fetch, port: config.port }, () => {
   console.log(`Server listening on port ${config.port} (${config.appBaseUrl})`);
 });

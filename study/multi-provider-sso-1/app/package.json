@@ -6,8 +6,8 @@
     "start": "node src/server.js"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "express-session": "^1.18.1",
+    "@hono/node-server": "^2.1.5",
+    "hono": "^4.13.14",
     "jose": "^5.9.6"
   }
 }
