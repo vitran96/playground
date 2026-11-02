@@ -1,0 +1,245 @@
+{
+  "id": "external",
+  "realm": "external",
+  "displayName": "External Partner Realm",
+  "enabled": true,
+  "loginTheme": "kc2-external",
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "resetPasswordAllowed": true,
+  "organizationsEnabled": true,
+  "smtpServer": {
+    "host": "mailpit",
+    "port": "1025",
+    "from": "no-reply@auth.example.com"
+  },
+  "roles": {
+    "realm": [
+      {
+        "name": "partner",
+        "description": "External partner role"
+      },
+      {
+        "name": "employee",
+        "description": "Internal employee role"
+      },
+      {
+        "name": "app-admin",
+        "description": "Application administrator role"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "carol@partner.example.com",
+      "email": "carol@partner.example.com",
+      "firstName": "Carol",
+      "lastName": "Partner",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "carol",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "partner"
+      ]
+    },
+    {
+      "username": "dave@customer.example.com",
+      "email": "dave@customer.example.com",
+      "firstName": "Dave",
+      "lastName": "Customer",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dave",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "partner"
+      ]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "app-claims",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "idp",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionnote-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "identity_provider",
+            "claim.name": "idp",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultDefaultClientScopes": [
+    "role_list",
+    "profile",
+    "email",
+    "app-claims"
+  ],
+  "clients": [
+    {
+      "clientId": "app-arch1",
+      "name": "Architecture 1 Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH1}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8101/api/architecture-1/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8101/architecture-1/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "app-claims"
+      ]
+    },
+    {
+      "clientId": "app-arch2",
+      "name": "Architecture 2 Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH2}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8201/api/architecture-2/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8201/architecture-2/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "app-claims"
+      ]
+    },
+    {
+      "clientId": "app-arch3-ext",
+      "name": "Architecture 3 External Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH3_EXT}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://ext.localhost:8302/api/architecture-3/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://ext.localhost:8302/architecture-3/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "app-claims"
+      ]
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "internal-kc1",
+      "displayName": "Company account",
+      "providerId": "oidc",
+      "enabled": true,
+      "trustEmail": true,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "issuer": "http://localhost:8081/realms/internal",
+        "authorizationUrl": "http://localhost:8081/realms/internal/protocol/openid-connect/auth",
+        "logoutUrl": "http://localhost:8081/realms/internal/protocol/openid-connect/logout",
+        "tokenUrl": "http://keycloak-1:8080/realms/internal/protocol/openid-connect/token",
+        "userInfoUrl": "http://keycloak-1:8080/realms/internal/protocol/openid-connect/userinfo",
+        "jwksUrl": "http://keycloak-1:8080/realms/internal/protocol/openid-connect/certs",
+        "useJwksUrl": "true",
+        "validateSignature": "true",
+        "pkceEnabled": "true",
+        "pkceMethod": "S256",
+        "clientId": "kc2-broker",
+        "clientSecret": "${KC2_BROKER_SECRET}",
+        "clientAuthMethod": "client_secret_post",
+        "defaultScope": "openid email profile",
+        "syncMode": "FORCE"
+      }
+    }
+  ],
+  "identityProviderMappers": [
+    {
+      "name": "hardcoded-employee-role",
+      "identityProviderAlias": "internal-kc1",
+      "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+      "config": {
+        "role": "employee"
+      }
+    },
+    {
+      "name": "claim-to-admin-role",
+      "identityProviderAlias": "internal-kc1",
+      "identityProviderMapper": "oidc-claim-to-role-idp-mapper",
+      "config": {
+        "claim": "roles",
+        "claim.value": "app-admin",
+        "role": "app-admin"
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Secrets and environment files
+.env
+keycloak/ad/krb5.conf
+keycloak/ad/*.keytab
+
+# Node / Build artifacts
+node_modules/
+dist/
+.DS_Store

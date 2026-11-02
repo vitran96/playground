@@ -1,0 +1,29 @@
+.custom-brand-header {
+  margin-bottom: 1.5rem;
+}
+
+.brand-banner {
+  padding: 1.25rem 1.5rem;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.banner-kc1 {
+  background-color: #1b5e20;
+  color: #ffffff;
+  border: 1px solid #144a19;
+}
+
+.brand-banner h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.banner-subtitle {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.9rem;
+  opacity: 0.95;
+  color: #e8f5e9;
+}

@@ -1,0 +1,12 @@
+# Docker compose override for production / staging Active Directory integration with Kerberos / SPNEGO
+# Run with: docker compose -f compose.yaml -f compose.ad.yaml up
+
+services:
+  keycloak-1:
+    command: ["start", "--import-realm"]
+    environment:
+      KC_HOSTNAME: "https://sso.corp.example.com"
+      JAVA_OPTS_APPEND: "-Djava.security.krb5.conf=/etc/krb5.conf"
+    volumes:
+      - ./keycloak/ad/krb5.conf:/etc/krb5.conf:ro,z
+      - ./keycloak/ad/keycloak.keytab:/opt/keycloak/conf/keycloak.keytab:ro,z

@@ -1,0 +1,137 @@
+# Local evaluation environment for Keycloak Login Architectures
+# Starts frontend, backend, keycloak-1, keycloak-2, kc2-init, mailpit, and 6 gateway containers.
+
+x-keycloak: &keycloak
+  image: quay.io/keycloak/keycloak:26.8.1
+  command: ["start-dev", "--import-realm"]
+  environment: &kc-env
+    KC_BOOTSTRAP_ADMIN_USERNAME: admin
+    KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    KC_HEALTH_ENABLED: "true"
+  healthcheck:
+    test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000; printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep -q UP <&3"]
+    interval: 5s
+    retries: 60
+
+x-gateway: &gateway
+  build: ./gateway
+  depends_on:
+    keycloak-1: { condition: service_healthy }
+    keycloak-2: { condition: service_healthy }
+    backend:    { condition: service_started }
+    frontend:   { condition: service_started }
+
+services:
+  frontend:
+    image: docker.io/library/nginx:1.27-alpine
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html:ro,z
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro,z
+    ports: ["8080:80"]
+
+  backend:
+    build: ./backend
+    env_file: .env
+    # No exposed ports on host: backend is accessible exclusively through Apache gateways
+
+  keycloak-1:
+    <<: *keycloak
+    environment: { <<: *kc-env, KC_HOSTNAME: "http://localhost:8081" }
+    env_file: .env
+    volumes:
+      - ./keycloak/kc1/import:/opt/keycloak/data/import:ro,z
+      - ./keycloak/kc1/themes/kc1-internal:/opt/keycloak/themes/kc1-internal:ro,z
+    ports: ["8081:8080"]
+
+  keycloak-2:
+    <<: *keycloak
+    environment: { <<: *kc-env, KC_HOSTNAME: "http://localhost:8082" }
+    env_file: .env
+    volumes:
+      - ./keycloak/kc2/import:/opt/keycloak/data/import:ro,z
+      - ./keycloak/kc2/themes/kc2-external:/opt/keycloak/themes/kc2-external:ro,z
+    ports: ["8082:8080"]
+
+  kc2-init:
+    image: quay.io/keycloak/keycloak:26.8.1
+    entrypoint: ["/bin/bash", "/init/setup-organization.sh"]
+    volumes: ["./keycloak/kc2/init:/init:ro,z"]
+    depends_on: { keycloak-2: { condition: service_healthy } }
+    restart: "no"
+
+  mailpit:
+    image: docker.io/axllent/mailpit:v1.33.0
+    ports: ["8025:8025"]
+
+  gw-1:
+    <<: *gateway
+    environment:
+      GATEWAY_ID: gw-1
+      GATEWAY_SECRET: ${GW_SECRET_GW_1}
+      ARCH: architecture-1
+      OIDC_CLIENT_ID: app-arch1
+      OIDC_CLIENT_SECRET: ${OIDC_SECRET_APP_ARCH1}
+      OIDC_CRYPTO_PASSPHRASE: ${OIDC_CRYPTO_PASSPHRASE}
+    volumes: ["./gateway/conf/gw-1.conf:/etc/apache2/sites-enabled/gateway.conf:ro,z"]
+    ports: ["8101:80"]
+
+  gw-2:
+    <<: *gateway
+    environment:
+      GATEWAY_ID: gw-2
+      GATEWAY_SECRET: ${GW_SECRET_GW_2}
+      ARCH: architecture-2
+      OIDC_CLIENT_ID: app-arch2
+      OIDC_CLIENT_SECRET: ${OIDC_SECRET_APP_ARCH2}
+      OIDC_CRYPTO_PASSPHRASE: ${OIDC_CRYPTO_PASSPHRASE}
+    volumes: ["./gateway/conf/gw-2.conf:/etc/apache2/sites-enabled/gateway.conf:ro,z"]
+    ports: ["8201:80"]
+
+  gw-3-int:
+    <<: *gateway
+    environment:
+      GATEWAY_ID: gw-3-int
+      GATEWAY_SECRET: ${GW_SECRET_GW_3_INT}
+      ARCH: architecture-3
+      OIDC_CLIENT_ID: app-arch3-int
+      OIDC_CLIENT_SECRET: ${OIDC_SECRET_APP_ARCH3_INT}
+      OIDC_CRYPTO_PASSPHRASE: ${OIDC_CRYPTO_PASSPHRASE}
+    volumes: ["./gateway/conf/gw-3-int.conf:/etc/apache2/sites-enabled/gateway.conf:ro,z"]
+    ports: ["8301:80"]
+
+  gw-3-ext:
+    <<: *gateway
+    environment:
+      GATEWAY_ID: gw-3-ext
+      GATEWAY_SECRET: ${GW_SECRET_GW_3_EXT}
+      ARCH: architecture-3
+      OIDC_CLIENT_ID: app-arch3-ext
+      OIDC_CLIENT_SECRET: ${OIDC_SECRET_APP_ARCH3_EXT}
+      OIDC_CRYPTO_PASSPHRASE: ${OIDC_CRYPTO_PASSPHRASE}
+    volumes: ["./gateway/conf/gw-3-ext.conf:/etc/apache2/sites-enabled/gateway.conf:ro,z"]
+    ports: ["8302:80"]
+
+  gw-4-int:
+    <<: *gateway
+    environment:
+      GATEWAY_ID: gw-4-int
+      GATEWAY_SECRET: ${GW_SECRET_GW_4_INT}
+      ARCH: architecture-4
+      OIDC_CLIENT_ID: app-arch4-int
+      OIDC_CLIENT_SECRET: ${OIDC_SECRET_APP_ARCH4_INT}
+      OIDC_CRYPTO_PASSPHRASE: ${OIDC_CRYPTO_PASSPHRASE}
+    volumes: ["./gateway/conf/gw-4-int.conf:/etc/apache2/sites-enabled/gateway.conf:ro,z"]
+    ports: ["8401:80"]
+
+  gw-4-ext:
+    <<: *gateway
+    environment:
+      GATEWAY_ID: gw-4-ext
+      GATEWAY_SECRET: ${GW_SECRET_GW_4_EXT}
+      ARCH: architecture-4
+    volumes: ["./gateway/conf/gw-4-ext.conf:/etc/apache2/sites-enabled/gateway.conf:ro,z"]
+    ports: ["8402:80"]
+    depends_on:
+      backend:  { condition: service_started }
+      frontend: { condition: service_started }

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keycloak Login Architectures – Evaluation Portal</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+  <header class="container" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <h1>Keycloak Login Architectures Demo</h1>
+    <p>Reference implementation comparing four patterns for integrating internal Active Directory and external partners with Apache gateways and a decoupled backend.</p>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Architectures Under Evaluation</h2>
+      <div class="grid">
+        <article>
+          <header>
+            <strong style="color: var(--pico-primary);">Architecture 1</strong>
+            <h3>Single Gateway: Email-First Routing</h3>
+          </header>
+          <p>Single URL for everyone. keycloak-2 prompts for email first; <code>@internal.email.com</code> is brokered to keycloak-1, others enter password directly.</p>
+          <footer>
+            <a href="http://localhost:8101/architecture-1/" role="button">Open Architecture 1 (:8101)</a>
+          </footer>
+        </article>
+
+        <article>
+          <header>
+            <strong style="color: var(--pico-primary);">Architecture 2</strong>
+            <h3>Single Gateway: User-Selected IdP</h3>
+          </header>
+          <p>Frontend presents two clear buttons (Employee vs Partner). Gateway forwards selection directly using <code>kc_idp_hint</code>.</p>
+          <footer>
+            <a href="http://localhost:8201/architecture-2/" role="button">Open Architecture 2 (:8201)</a>
+          </footer>
+        </article>
+      </div>
+
+      <div class="grid" style="margin-top: 1.5rem;">
+        <article>
+          <header>
+            <strong style="color: var(--pico-primary);">Architecture 3</strong>
+            <h3>Two Domains: Network-Decided Routing</h3>
+          </header>
+          <p>Internal domain talks directly to keycloak-1 (zero-click Kerberos/SPNEGO); external domain talks to keycloak-2.</p>
+          <footer>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <a href="http://int.localhost:8301/architecture-3/" role="button" class="outline" style="color: #2e7d32; border-color: #2e7d32;">Internal (:8301)</a>
+              <a href="http://ext.localhost:8302/architecture-3/" role="button" class="outline" style="color: #1565c0; border-color: #1565c0;">External (:8302)</a>
+            </div>
+          </footer>
+        </article>
+
+        <article>
+          <header>
+            <strong style="color: var(--pico-primary);">Architecture 4</strong>
+            <h3>Two Domains: App-Owned External Login</h3>
+          </header>
+          <p>Internal domain gets zero-click Keycloak login; external domain bypasses Keycloak entirely with app-owned login/signup/reset.</p>
+          <footer>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <a href="http://int.localhost:8401/architecture-4/" role="button" class="outline" style="color: #2e7d32; border-color: #2e7d32;">Internal (:8401)</a>
+              <a href="http://ext.localhost:8402/architecture-4/" role="button" class="outline" style="color: #1565c0; border-color: #1565c0;">External (:8402)</a>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+    <section style="margin-top: 3rem;">
+      <h2>Test Credentials</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Identity Store</th>
+            <th>Username / Email</th>
+            <th>Password</th>
+            <th>Assigned Roles</th>
+            <th>Applicable Architectures</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>keycloak-1</code> (internal)</td>
+            <td><code>alice</code> (<code>alice@internal.email.com</code>)</td>
+            <td><code>alice</code></td>
+            <td><code>employee</code>, <code>app-admin</code></td>
+            <td>Arch 1, 2, 3, 4 (Internal)</td>
+          </tr>
+          <tr>
+            <td><code>keycloak-1</code> (internal)</td>
+            <td><code>bob</code> (<code>bob@internal.email.com</code>)</td>
+            <td><code>bob</code></td>
+            <td><code>employee</code></td>
+            <td>Arch 1, 2, 3, 4 (Internal)</td>
+          </tr>
+          <tr>
+            <td><code>keycloak-2</code> (external)</td>
+            <td><code>carol@partner.example.com</code></td>
+            <td><code>carol</code></td>
+            <td><code>partner</code></td>
+            <td>Arch 1, 2, 3 (External)</td>
+          </tr>
+          <tr>
+            <td><code>keycloak-2</code> (external)</td>
+            <td><code>dave@customer.example.com</code></td>
+            <td><code>dave</code></td>
+            <td><code>partner</code></td>
+            <td>Arch 1, 2, 3 (External)</td>
+          </tr>
+          <tr>
+            <td>Backend local store</td>
+            <td><code>erin@partner.example.com</code></td>
+            <td><code>erin</code></td>
+            <td><code>partner</code></td>
+            <td>Arch 4 (External only)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section style="margin-top: 2rem;">
+      <h2>How to Compare</h2>
+      <ol>
+        <li><strong>Employee Login:</strong> Test each architecture using <code>alice@internal.email.com</code>. In Arch 1, type email once; in Arch 2, click Employee; in Arch 3 & 4 (internal), login is direct.</li>
+        <li><strong>External Partner Login:</strong> Test each architecture using <code>carol@partner.example.com</code>. Notice the blue theme on keycloak-2 versus the app-owned form in Arch 4.</li>
+        <li><strong>Token Isolation (Cross-Zone Replay):</strong> In Arch 3, log in on the external domain, copy the cookie, and replay it against the internal domain. The backend rejects it with 401 because the <code>aud</code> claim is cryptographically enforced per entry point.</li>
+      </ol>
+    </section>
+
+    <section style="margin-top: 2rem;">
+      <h2>Infrastructure Tools & Consoles</h2>
+      <div class="grid">
+        <article>
+          <h4>keycloak-1 Admin Console</h4>
+          <p>Company IdP (realm <code>internal</code>).<br>Credentials: <code>admin</code> / <code>admin</code></p>
+          <a href="http://localhost:8081/admin" target="_blank" rel="noopener">Open :8081/admin</a>
+        </article>
+        <article>
+          <h4>keycloak-2 Admin Console</h4>
+          <p>Partner & Brokering IdP (realm <code>external</code>).<br>Credentials: <code>admin</code> / <code>admin</code></p>
+          <a href="http://localhost:8082/admin" target="_blank" rel="noopener">Open :8082/admin</a>
+        </article>
+        <article>
+          <h4>Mailpit Email Inbox</h4>
+          <p>Captures Keycloak password-reset emails.<br>No real email sent outside.</p>
+          <a href="http://localhost:8025" target="_blank" rel="noopener">Open :8025 (Mailpit)</a>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container" style="margin-top: 3rem; margin-bottom: 2rem; border-top: 1px solid var(--pico-muted-border-color); padding-top: 1rem; font-size: 0.85rem; color: var(--pico-muted-color);">
+    If <code>*.localhost</code> domains do not resolve in your browser, ensure <code>127.0.0.1 int.localhost ext.localhost</code> is present in <code>/etc/hosts</code>.
+  </footer>
+</body>
+</html>
