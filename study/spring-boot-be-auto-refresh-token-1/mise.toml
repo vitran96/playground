@@ -1,0 +1,9 @@
+[tools]
+java = "21.0.2"
+maven = "3.9.16"
+
+[tasks.test]
+run = "mvn test"
+
+[tasks.dev]
+run = "mvn spring-boot:run"

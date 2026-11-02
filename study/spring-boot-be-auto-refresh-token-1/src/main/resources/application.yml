@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: cookie-auth
+
+server:
+  port: 8080
+
+app:
+  auth:
+    access-ttl: 10m
+    refresh-ttl: 7d
+    jwt-secret: ${JWT_SECRET:}   # blank = random key per start (fine: sessions are in memory)
+  cookie:
+    secure: true                 # Chrome, Firefox and curl accept Secure cookies on http://localhost
+    same-site: Strict
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+      - http://localhost:4200
+      - http://localhost:5173
+  users:
+    - username: alice
+      password: password
+      roles: [USER]
+    - username: admin
+      password: admin
+      roles: [USER, ADMIN]
+
+logging:
+  level:
+    com.example.auth: DEBUG
