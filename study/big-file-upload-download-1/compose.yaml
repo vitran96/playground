@@ -1,0 +1,26 @@
+services:
+  db:
+    image: docker.io/library/postgres:17
+    environment:
+      POSTGRES_DB: bigfiles
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d bigfiles"]
+      interval: 2s
+      retries: 15
+
+  app:
+    build: .
+    ports: ["${APP_PORT:-8085}:8080"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bigfiles
+      APP_STORAGE_DIR: /data/files
+    volumes: [files:/data/files]
+    depends_on:
+      db: { condition: service_healthy }
+
+volumes:
+  pgdata: {}
+  files: {}

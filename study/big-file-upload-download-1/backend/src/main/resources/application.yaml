@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bigfiles
+    username: app
+    password: app
+  sql:
+    init:
+      mode: always
+
+app:
+  storage-dir: ./data/files
