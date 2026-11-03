@@ -1,22 +1,26 @@
+// @ts-nocheck
 /**
- * Frontend application logic for Architecture 3.
- * Used by: Architecture 3 (Two domains: int.localhost:8301 and ext.localhost:8302).
+ * Frontend application logic for Architecture 1.
+ * Used by: Architecture 1 (Email-first via keycloak-3).
  */
 
-import { render, html } from '../shared/lib.js'
-import { getGateway, getMe } from '../shared/api.js'
-import { Layout, ExplainPanel, SessionCard, SignedOut } from '../shared/components.js'
-import { explain } from './explain.js'
+import { render, html } from '../shared/lib.mjs'
+import { getGateway, getMe } from '../shared/api.mjs'
+import { Layout, ExplainPanel, SessionCard, SignedOut } from '../shared/components.mjs'
+import { explain } from './explain.mjs'
 
-const ARCH = 'architecture-3'
+const ARCH = 'architecture-1'
 
 async function init() {
   const root = document.getElementById('root')
 
+  // 1. Discover which gateway we are behind
   const gwRes = await getGateway(ARCH)
   const gw = gwRes.data
 
+  // 2. Check if active backend session exists
   const meRes = await getMe(ARCH)
+
   const isLoggedOut = new URLSearchParams(location.search).has('loggedout')
 
   function AppContent() {
@@ -39,14 +43,14 @@ async function init() {
       `
     }
 
-    // Both internal and external domains use gateway redirect
+    // Auto-redirect to gateway OIDC flow
     location.href = `/api/${ARCH}/login?next=${encodeURIComponent(location.pathname)}`
     return html`<p aria-busy="true">Redirecting to login...</p>`
   }
 
   render(
     html`
-      <${Layout} title="Architecture 3: Two Domains (Network-Decided)" arch=${ARCH} gw=${gw}>
+      <${Layout} title="Architecture 1: Email-First Routing" arch=${ARCH} gw=${gw}>
         <${AppContent} />
       <//>
     `,

@@ -1,0 +1,195 @@
+{
+  "id": "arch2",
+  "realm": "arch2",
+  "displayName": "Architecture 2 Broker Realm",
+  "enabled": true,
+  "loginTheme": "kc4-external",
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "resetPasswordAllowed": true,
+  "smtpServer": {
+    "host": "mailpit",
+    "port": "1025",
+    "from": "no-reply@auth.example.com"
+  },
+  "roles": {
+    "realm": [
+      {
+        "name": "partner",
+        "description": "External partner role"
+      },
+      {
+        "name": "employee",
+        "description": "Internal employee role"
+      },
+      {
+        "name": "app-admin",
+        "description": "Application administrator role"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "carol@partner.example.com",
+      "email": "carol@partner.example.com",
+      "firstName": "Carol",
+      "lastName": "Partner",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "carol",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "partner"
+      ]
+    },
+    {
+      "username": "dave@customer.example.com",
+      "email": "dave@customer.example.com",
+      "firstName": "Dave",
+      "lastName": "Customer",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dave",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "partner"
+      ]
+    },
+    {
+      "username": "service-account-backend-admin",
+      "enabled": true,
+      "serviceAccountClientId": "backend-admin",
+      "clientRoles": {
+        "realm-management": ["manage-users", "view-realm"]
+      }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "backend-admin",
+      "name": "Backend admin API (app-admin user registration)",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${KC4_ADMIN_SECRET}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true
+    },
+    {
+      "clientId": "app-arch2",
+      "name": "Architecture 2 Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH2}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8301/api/architecture-2/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8301/architecture-2/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "idp",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "config": {
+            "user.session.note": "identity_provider",
+            "claim.name": "idp",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "internal-kc1",
+      "displayName": "Company account",
+      "providerId": "oidc",
+      "enabled": true,
+      "trustEmail": true,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "issuer": "http://localhost:8181/realms/internal",
+        "authorizationUrl": "http://localhost:8181/realms/internal/protocol/openid-connect/auth",
+        "logoutUrl": "http://localhost:8181/realms/internal/protocol/openid-connect/logout",
+        "tokenUrl": "http://keycloak-1:8180/realms/internal/protocol/openid-connect/token",
+        "userInfoUrl": "http://keycloak-1:8180/realms/internal/protocol/openid-connect/userinfo",
+        "jwksUrl": "http://keycloak-1:8180/realms/internal/protocol/openid-connect/certs",
+        "useJwksUrl": "true",
+        "validateSignature": "true",
+        "pkceEnabled": "true",
+        "pkceMethod": "S256",
+        "loginHint": "true",
+        "clientId": "kc4-broker",
+        "clientSecret": "${KC4_BROKER_SECRET}",
+        "clientAuthMethod": "client_secret_post",
+        "defaultScope": "openid email profile",
+        "syncMode": "FORCE"
+      }
+    }
+  ],
+  "identityProviderMappers": [
+    {
+      "name": "hardcoded-employee-role",
+      "identityProviderAlias": "internal-kc1",
+      "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+      "config": {
+        "role": "employee"
+      }
+    },
+    {
+      "name": "claim-to-admin-role",
+      "identityProviderAlias": "internal-kc1",
+      "identityProviderMapper": "oidc-role-idp-mapper",
+      "config": {
+        "claim": "roles",
+        "claim.value": "app-admin",
+        "role": "app-admin"
+      }
+    }
+  ]
+}

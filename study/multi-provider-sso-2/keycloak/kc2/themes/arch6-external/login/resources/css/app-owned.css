@@ -1,0 +1,2 @@
+/* Architecture 6: registration is app-owned. ponytail: link hidden only; realm still allows /registration for Arch 3 */
+#kc-registration-container { display: none !important; }

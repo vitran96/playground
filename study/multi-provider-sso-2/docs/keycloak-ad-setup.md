@@ -141,7 +141,7 @@ klist get HTTP/sso.corp.example.com
 # Linux
 kinit user@CORP.EXAMPLE.COM
 curl -sk --negotiate -u : -o /dev/null -w '%{http_code}\n' \
-  "https://sso.corp.example.com/realms/internal/protocol/openid-connect/auth?client_id=app-arch3-int&response_type=code&scope=openid&redirect_uri=http://int.localhost:8301/api/architecture-3/login/callback"
+  "https://sso.corp.example.com/realms/internal/protocol/openid-connect/auth?client_id=app-arch3-int&response_type=code&scope=openid&redirect_uri=http://int.localhost:8401/api/architecture-3/login/callback"
 # Expect: 302 redirect with code
 ```
 

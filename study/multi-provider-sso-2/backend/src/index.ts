@@ -11,6 +11,8 @@ import { requireGateway, type GatewayVariables } from './gateway.js'
 import { sessionRoutes } from './routes/session.js'
 import { ssoRoutes } from './routes/sso.js'
 import { localAuthRoutes } from './routes/local-auth.js'
+import { adminRoutes } from './routes/admin.js'
+import { selfServiceRoutes } from './routes/self-service.js'
 
 const app = new Hono<{ Variables: GatewayVariables }>()
 
@@ -24,6 +26,8 @@ app.use('/api/:arch/*', requireGateway)
 app.route('/', sessionRoutes)
 app.route('/', ssoRoutes)
 app.route('/', localAuthRoutes)
+app.route('/', adminRoutes)
+app.route('/', selfServiceRoutes)
 
 const port = 3000
 console.log(`Backend server starting on port ${port}...`)

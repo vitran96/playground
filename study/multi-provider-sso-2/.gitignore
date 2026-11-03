@@ -7,3 +7,5 @@ keycloak/ad/*.keytab
 node_modules/
 dist/
 .DS_Store
+
+out/

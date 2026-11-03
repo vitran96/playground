@@ -70,18 +70,25 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "redirectUris": [
-        "http://int.localhost:8301/api/architecture-3/login/callback"
+        "http://int.localhost:8401/api/architecture-3/login/callback"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://int.localhost:8301/architecture-3/*##"
+        "post.logout.redirect.uris": "http://int.localhost:8401/architecture-3/*##"
       },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
       "protocolMappers": [
         {
           "name": "roles",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "consentRequired": false,
           "config": {
             "claim.name": "roles",
             "jsonType.label": "String",
@@ -104,18 +111,107 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "redirectUris": [
-        "http://int.localhost:8401/api/architecture-4/login/callback"
+        "http://int.localhost:8501/api/architecture-4/login/callback"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://int.localhost:8401/architecture-4/*##"
+        "post.logout.redirect.uris": "http://int.localhost:8501/architecture-4/*##"
       },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
       "protocolMappers": [
         {
           "name": "roles",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "app-arch6-int",
+      "name": "Architecture 6 Internal Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH6_INT}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://int.localhost:8601/api/architecture-6/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://int.localhost:8601/architecture-6/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "app-arch7-int",
+      "name": "Architecture 7 Internal Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH7_INT}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://int.localhost:8701/api/architecture-7/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://int.localhost:8701/architecture-7/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
           "config": {
             "claim.name": "roles",
             "jsonType.label": "String",
@@ -138,12 +234,103 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "redirectUris": [
-        "http://localhost:8082/realms/external/broker/internal-kc1/endpoint"
+        "http://localhost:8182/realms/external/broker/internal-kc1/endpoint"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:8082/realms/external/*##"
+        "post.logout.redirect.uris": "http://localhost:8182/realms/external/*##"
       },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "kc3-broker",
+      "name": "Keycloak 3 Broker Client (Architecture 1)",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${KC3_BROKER_SECRET}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8183/realms/arch1/broker/internal-kc1/endpoint"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8183/realms/arch1/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "kc4-broker",
+      "name": "Keycloak 4 Broker Client (Architecture 2)",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${KC4_BROKER_SECRET}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8184/realms/arch2/broker/internal-kc1/endpoint"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8184/realms/arch2/*##"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
       "protocolMappers": [
         {
           "name": "roles",

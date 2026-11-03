@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Shared API client for frontend interactions.
  * Used by: Architectures 1, 2, 3, 4.
@@ -64,10 +65,28 @@ export async function localForgotPassword(email) {
   })
 }
 
-export async function localResetPassword(token, newPassword) {
+export async function localResetPassword(email, code, newPassword) {
   return request('/api/architecture-4/local/reset-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token, newPassword }),
+    body: JSON.stringify({ email, code, newPassword }),
   })
 }
+
+export async function adminCreateUser(arch, user) {
+  return request(`/api/${arch}/admin/users`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(user),
+  })
+}
+
+// Architectures 6 and 7: app-owned registration / reset for keycloak-2 users
+const postJson = (url, body) => request(url, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body),
+})
+export const selfRegister = (arch, user) => postJson(`/api/${arch}/self/register`, user)
+export const selfForgotPassword = (arch, email) => postJson(`/api/${arch}/self/forgot-password`, { email })
+export const selfResetPassword = (arch, email, code, newPassword) => postJson(`/api/${arch}/self/reset-password`, { email, code, newPassword })

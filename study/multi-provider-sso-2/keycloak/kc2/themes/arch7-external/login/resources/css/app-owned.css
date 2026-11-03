@@ -1,0 +1,3 @@
+/* Architecture 7: registration and password reset are app-owned. ponytail: links hidden only; realm still allows both for Arch 3 */
+#kc-registration-container,
+a[href*="/login-actions/reset-credentials"] { display: none !important; }

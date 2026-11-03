@@ -1,8 +1,8 @@
 # ADR-001: Login Architecture for Internal and External Users
 
-**Status:** Proposed | Accepted  
-**Date:** YYYY-MM-DD  
-**Deciders:** Tech Lead, Principal Engineer, Security Architect, Network Lead  
+**Status:** Proposed | Accepted
+**Date:** YYYY-MM-DD
+**Deciders:** Tech Lead, Principal Engineer, Security Architect, Network Lead
 
 ## Context
 Internal users must be logged in automatically on Active Directory-joined PCs (using SPNEGO/Kerberos where possible); external users and partners must be authenticated with email and password.
@@ -17,15 +17,15 @@ We select **Architecture [1 / 2 / 3 / 4]**, because:
 
 | Option | Architecture Pattern | Entry Points | Auto-login UX | Operational Overhead |
 |---|---|---|---|---|
-| **1** | Single Gateway: Email-First (keycloak-2) | 1 (`localhost:8101`) | Email prompt once, silent redirect to keycloak-1 | Low (single OIDC client, no split DNS) |
-| **2** | Single Gateway: User Choice Button | 1 (`localhost:8201`) | One click ("Employee"), forwards `kc_idp_hint` | Low (UI choice; risk if user picks wrong) |
+| **1** | Single Gateway: Email-First (keycloak-3) | 1 (`localhost:8201`) | Email prompt once, silent redirect to keycloak-1 | Low (single OIDC client, no split DNS) |
+| **2** | Single Gateway: User Choice Button (keycloak-4) | 1 (`localhost:8301`) | One click ("Employee"), forwards `kc_idp_hint` | Low (UI choice; risk if user picks wrong) |
 | **3** | Two Domains: Network-Decided Routing | 2 (`int.*`, `ext.*`) | True zero-click on internal domain | Medium (requires split DNS or Zscaler ZPA) |
 | **4** | Two Domains: App-Owned External Login | 2 (`int.*`, `ext.*`) | True zero-click internal; app owns external | High (app team owns password store & reset) |
 
 ## Key Architectural Questions Settled
 1. **Zero-Click vs Email-First:** Does entering an email address once per session satisfy the auto-login requirement for internal employees?
 2. **Network Routing:** Is the network engineering team available to publish and maintain internal application segments in Zscaler ZPA for the internal entry point?
-3. **Identity Broker Firewall:** Is the backchannel firewall path between `keycloak-2` and `keycloak-1` token/JWKS endpoints approved?
+3. **Identity Broker Firewall:** Is the backchannel firewall path between the broker Keycloaks (`keycloak-2/3/4`) and `keycloak-1` token/JWKS endpoints approved?
 4. **Credential Ownership:** Does the product team want to maintain password security (hashing, reset tokens, rate-limiting, MFA) in application code, or delegate completely to Keycloak?
 
 ## Consequences

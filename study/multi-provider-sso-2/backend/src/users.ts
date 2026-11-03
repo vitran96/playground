@@ -32,14 +32,16 @@ interface LocalUser {
   hash: string // hex encoded
 }
 
-export interface ResetTokenRecord {
-  email: string
+export interface ResetCodeRecord {
+  code: string
   expiresAt: number
+  tries: number
 }
 
 // In-memory local user store for Architecture 4 external side
 export const localUsers = new Map<string, LocalUser>()
-export const resetTokens = new Map<string, ResetTokenRecord>()
+// Keyed by normalized email: one active reset code per account
+export const resetCodes = new Map<string, ResetCodeRecord>()
 
 function hashPassword(password: string, salt: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -74,21 +76,23 @@ export async function verifyPassword(password: string, user: LocalUser): Promise
   return crypto.timingSafeEqual(computedBuf, expectedBuf)
 }
 
+// Returns an error message, or null if the email is acceptable for an external account
+export function externalEmailError(normalizedEmail: string): string | null {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || normalizedEmail.length > 254) {
+    return 'Invalid email address format'
+  }
+  if (normalizedEmail.endsWith('@internal.email.com')) {
+    return 'Company employees must use the internal corporate portal, not an external account'
+  }
+  return null
+}
+
 export async function createLocalUser(email: string, password: string, displayName?: string): Promise<{ success: boolean; error?: string }> {
   const normalizedEmail = email.trim().toLowerCase()
 
-  // Input validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(normalizedEmail)) {
-    return { success: false, error: 'Invalid email address format' }
-  }
-
-  // Refuse internal corporate email domain on external sign-up
-  if (normalizedEmail.endsWith('@internal.email.com')) {
-    return {
-      success: false,
-      error: 'Company employees must use the internal corporate portal (http://int.localhost:8401)',
-    }
+  const emailError = externalEmailError(normalizedEmail)
+  if (emailError) {
+    return { success: false, error: emailError }
   }
 
   if (password.length < 8) {
@@ -111,38 +115,57 @@ export async function createLocalUser(email: string, password: string, displayNa
   return { success: true }
 }
 
-export function createResetToken(email: string): string | null {
-  const normalizedEmail = email.trim().toLowerCase()
-  if (!localUsers.has(normalizedEmail)) return null
+const RESET_TTL_MS = 10 * 60 * 1000
+const RESET_MAX_TRIES = 5
+const RESET_RESEND_COOLDOWN_MS = 60 * 1000
 
-  const token = crypto.randomBytes(32).toString('hex')
-  const expiresAt = Date.now() + 15 * 60 * 1000 // 15 minutes validity
-  resetTokens.set(token, { email: normalizedEmail, expiresAt })
-  return token
+// Returns a fresh 6-digit code, or null if the account is unknown or a code was issued under a minute ago
+export function createResetCode(email: string, known?: boolean): string | null {
+  const normalizedEmail = email.trim().toLowerCase()
+  if (!(known ?? localUsers.has(normalizedEmail))) return null
+
+  const existing = resetCodes.get(normalizedEmail)
+  if (existing && existing.expiresAt - RESET_TTL_MS + RESET_RESEND_COOLDOWN_MS > Date.now()) return null
+
+  const code = crypto.randomInt(0, 1_000_000).toString().padStart(6, '0')
+  resetCodes.set(normalizedEmail, { code, expiresAt: Date.now() + RESET_TTL_MS, tries: 0 })
+  return code
 }
 
-export async function consumeResetToken(token: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
-  const record = resetTokens.get(token)
-  if (!record || Date.now() > record.expiresAt) {
-    resetTokens.delete(token)
-    return { success: false, error: 'Invalid or expired password reset token' }
+// True if the code matches; a match consumes it, a miss counts one of the allowed tries
+export function checkResetCode(email: string, code: string): boolean {
+  const normalizedEmail = email.trim().toLowerCase()
+  const record = resetCodes.get(normalizedEmail)
+  if (!record) return false
+  if (Date.now() > record.expiresAt || record.tries >= RESET_MAX_TRIES) {
+    resetCodes.delete(normalizedEmail)
+    return false
   }
+
+  record.tries++
+  const expected = Buffer.from(record.code)
+  const given = Buffer.from(code.trim())
+  if (expected.length !== given.length || !crypto.timingSafeEqual(expected, given)) return false
+
+  resetCodes.delete(normalizedEmail)
+  return true
+}
+
+export async function consumeResetCode(email: string, code: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  const normalizedEmail = email.trim().toLowerCase()
+  const invalid = { success: false, error: 'Invalid or expired reset code' }
 
   if (newPassword.length < 8) {
     return { success: false, error: 'Password must be at least 8 characters long' }
   }
 
-  const user = localUsers.get(record.email)
-  if (!user) {
-    resetTokens.delete(token)
-    return { success: false, error: 'User account not found' }
-  }
+  if (!checkResetCode(normalizedEmail, code)) return invalid
+  const user = localUsers.get(normalizedEmail)
+  if (!user) return invalid
 
   const salt = crypto.randomBytes(16).toString('hex')
-  const hash = await hashPassword(newPassword, salt)
+  user.hash = await hashPassword(newPassword, salt)
   user.salt = salt
-  user.hash = hash
-  resetTokens.delete(token)
 
   return { success: true }
 }

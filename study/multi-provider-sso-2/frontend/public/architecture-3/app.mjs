@@ -1,14 +1,14 @@
 /**
- * Frontend application logic for Architecture 2.
- * Used by: Architecture 2 (User choice with kc_idp_hint).
+ * Frontend application logic for Architecture 3.
+ * Used by: Architecture 3 (Two domains: int.localhost:8401 and ext.localhost:8402).
  */
 
-import { render, html } from '../shared/lib.js'
-import { getGateway, getMe } from '../shared/api.js'
-import { Layout, ExplainPanel, SessionCard, SignedOut, ChooseLogin } from '../shared/components.js'
-import { explain } from './explain.js'
+import { render, html } from '../shared/lib.mjs'
+import { getGateway, getMe } from '../shared/api.mjs'
+import { Layout, ExplainPanel, SessionCard, SignedOut } from '../shared/components.mjs'
+import { explain } from './explain.mjs'
 
-const ARCH = 'architecture-2'
+const ARCH = 'architecture-3'
 
 async function init() {
   const root = document.getElementById('root')
@@ -39,16 +39,14 @@ async function init() {
       `
     }
 
-    // Architecture 2 presents choice buttons in the frontend
-    return html`
-      <${ChooseLogin} arch=${ARCH} />
-      <${ExplainPanel} explain=${explain} />
-    `
+    // Both internal and external domains use gateway redirect
+    location.href = `/api/${ARCH}/login?next=${encodeURIComponent(location.pathname)}`
+    return html`<p aria-busy="true">Redirecting to login...</p>`
   }
 
   render(
     html`
-      <${Layout} title="Architecture 2: User-Selected IdP Choice" arch=${ARCH} gw=${gw}>
+      <${Layout} title="Architecture 3: Two Domains (Network-Decided)" arch=${ARCH} gw=${gw}>
         <${AppContent} />
       <//>
     `,

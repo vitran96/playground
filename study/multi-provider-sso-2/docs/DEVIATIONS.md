@@ -10,7 +10,7 @@ This document records version-specific behaviors, schema verifications, and mino
 | Apache Gateway | `docker.io/library/debian:bookworm-slim` | `debian:bookworm-slim` | `apache2 2.4.68`, `libapache2-mod-auth-openidc 2.4.12.3` |
 | Frontend | `docker.io/library/nginx:1.27-alpine` | `1.27-alpine` | Static asset serving |
 | Backend | `docker.io/library/node:22-alpine` | `22-alpine` | Hono 4.6.18, Node 22 |
-| Mailpit | `docker.io/axllent/mailpit:v1.33.0` | `v1.33.0` | SMTP testing on :8025 / :1025 |
+| Mailpit | `docker.io/axllent/mailpit:v1.33.0` | `v1.33.0` | SMTP testing on :8125 / :1025 |
 
 ---
 

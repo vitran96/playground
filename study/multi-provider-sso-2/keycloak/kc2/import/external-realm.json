@@ -67,104 +67,28 @@
       "realmRoles": [
         "partner"
       ]
+    },
+    {
+      "username": "service-account-backend-admin",
+      "enabled": true,
+      "serviceAccountClientId": "backend-admin",
+      "clientRoles": {
+        "realm-management": ["manage-users", "view-realm"]
+      }
     }
   ],
   "clients": [
     {
-      "clientId": "app-arch1",
-      "name": "Architecture 1 Client",
+      "clientId": "backend-admin",
+      "name": "Backend admin API (app-admin user registration)",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "${OIDC_SECRET_APP_ARCH1}",
+      "secret": "${KC2_ADMIN_SECRET}",
       "protocol": "openid-connect",
       "publicClient": false,
-      "standardFlowEnabled": true,
+      "standardFlowEnabled": false,
       "directAccessGrantsEnabled": false,
-      "redirectUris": [
-        "http://localhost:8101/api/architecture-1/login/callback"
-      ],
-      "attributes": {
-        "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:8101/architecture-1/*##"
-      },
-      "protocolMappers": [
-        {
-          "name": "roles",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "consentRequired": false,
-          "config": {
-            "claim.name": "roles",
-            "jsonType.label": "String",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "userinfo.token.claim": "true",
-            "multivalued": "true"
-          }
-        },
-        {
-          "name": "idp",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usersessionmodel-note-mapper",
-          "consentRequired": false,
-          "config": {
-            "user.session.note": "identity_provider",
-            "claim.name": "idp",
-            "jsonType.label": "String",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "userinfo.token.claim": "true"
-          }
-        }
-      ]
-    },
-    {
-      "clientId": "app-arch2",
-      "name": "Architecture 2 Client",
-      "enabled": true,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "${OIDC_SECRET_APP_ARCH2}",
-      "protocol": "openid-connect",
-      "publicClient": false,
-      "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": false,
-      "redirectUris": [
-        "http://localhost:8201/api/architecture-2/login/callback"
-      ],
-      "attributes": {
-        "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:8201/architecture-2/*##"
-      },
-      "protocolMappers": [
-        {
-          "name": "roles",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "consentRequired": false,
-          "config": {
-            "claim.name": "roles",
-            "jsonType.label": "String",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "userinfo.token.claim": "true",
-            "multivalued": "true"
-          }
-        },
-        {
-          "name": "idp",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usersessionmodel-note-mapper",
-          "consentRequired": false,
-          "config": {
-            "user.session.note": "identity_provider",
-            "claim.name": "idp",
-            "jsonType.label": "String",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "userinfo.token.claim": "true"
-          }
-        }
-      ]
+      "serviceAccountsEnabled": true
     },
     {
       "clientId": "app-arch3-ext",
@@ -177,18 +101,25 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "redirectUris": [
-        "http://ext.localhost:8302/api/architecture-3/login/callback"
+        "http://ext.localhost:8402/api/architecture-3/login/callback"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://ext.localhost:8302/architecture-3/*##"
+        "post.logout.redirect.uris": "http://ext.localhost:8402/architecture-3/*##"
       },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
       "protocolMappers": [
         {
           "name": "roles",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "consentRequired": false,
           "config": {
             "claim.name": "roles",
             "jsonType.label": "String",
@@ -202,7 +133,116 @@
           "name": "idp",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usersessionmodel-note-mapper",
-          "consentRequired": false,
+          "config": {
+            "user.session.note": "identity_provider",
+            "claim.name": "idp",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "app-arch6-ext",
+      "name": "Architecture 6 External Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH6_EXT}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://ext.localhost:8602/api/architecture-6/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://ext.localhost:8602/architecture-6/*##",
+        "login_theme": "arch6-external"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "idp",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "config": {
+            "user.session.note": "identity_provider",
+            "claim.name": "idp",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "app-arch7-ext",
+      "name": "Architecture 7 External Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH7_EXT}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://ext.localhost:8702/api/architecture-7/login/callback"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://ext.localhost:8702/architecture-7/*##",
+        "login_theme": "arch7-external"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "idp",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
           "config": {
             "user.session.note": "identity_provider",
             "claim.name": "idp",
@@ -224,16 +264,17 @@
       "trustEmail": true,
       "firstBrokerLoginFlowAlias": "first broker login",
       "config": {
-        "issuer": "http://localhost:8081/realms/internal",
-        "authorizationUrl": "http://localhost:8081/realms/internal/protocol/openid-connect/auth",
-        "logoutUrl": "http://localhost:8081/realms/internal/protocol/openid-connect/logout",
-        "tokenUrl": "http://keycloak-1:8080/realms/internal/protocol/openid-connect/token",
-        "userInfoUrl": "http://keycloak-1:8080/realms/internal/protocol/openid-connect/userinfo",
-        "jwksUrl": "http://keycloak-1:8080/realms/internal/protocol/openid-connect/certs",
+        "issuer": "http://localhost:8181/realms/internal",
+        "authorizationUrl": "http://localhost:8181/realms/internal/protocol/openid-connect/auth",
+        "logoutUrl": "http://localhost:8181/realms/internal/protocol/openid-connect/logout",
+        "tokenUrl": "http://keycloak-1:8180/realms/internal/protocol/openid-connect/token",
+        "userInfoUrl": "http://keycloak-1:8180/realms/internal/protocol/openid-connect/userinfo",
+        "jwksUrl": "http://keycloak-1:8180/realms/internal/protocol/openid-connect/certs",
         "useJwksUrl": "true",
         "validateSignature": "true",
         "pkceEnabled": "true",
         "pkceMethod": "S256",
+        "loginHint": "true",
         "clientId": "kc2-broker",
         "clientSecret": "${KC2_BROKER_SECRET}",
         "clientAuthMethod": "client_secret_post",

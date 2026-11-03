@@ -10,7 +10,7 @@ export type LoginUi = 'redirect' | 'choice' | 'form'
 
 export interface Gateway {
   id: string
-  arch: 1 | 2 | 3 | 4
+  arch: 1 | 2 | 3 | 4 | 6 | 7
   zone: Zone
   loginUi: LoginUi
   oidc: boolean // false = no SSO in front (gw-4-ext)
@@ -51,6 +51,10 @@ export const GATEWAYS: Record<string, Gateway> = Object.fromEntries([
   g('gw-3-ext', 3, 'external', 'redirect'),
   g('gw-4-int', 4, 'internal', 'redirect'),
   g('gw-4-ext', 4, 'external', 'form', false),
+  g('gw-6-int', 6, 'internal', 'redirect'),
+  g('gw-6-ext', 6, 'external', 'choice'),
+  g('gw-7-int', 7, 'internal', 'redirect'),
+  g('gw-7-ext', 7, 'external', 'choice'),
 ].map((x) => [x.id, x]))
 
 // Token audience separates entry points so tokens cannot be replayed across zones or architectures

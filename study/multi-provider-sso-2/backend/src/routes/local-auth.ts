@@ -13,9 +13,24 @@ import {
   localUsers,
   verifyPassword,
   createLocalUser,
-  createResetToken,
-  consumeResetToken,
+  createResetCode,
+  consumeResetCode,
 } from '../users.js'
+
+// ponytail: Mailpit HTTP send API keeps the demo dependency-free; use SMTP (e.g. nodemailer) for a real mail server
+export async function sendMail(to: string, subject: string, text: string): Promise<void> {
+  const res = await fetch('http://mailpit:8125/api/v1/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      From: { Email: 'no-reply@app.example.com', Name: 'Demo App' },
+      To: [{ Email: to }],
+      Subject: subject,
+      Text: text,
+    }),
+  })
+  if (!res.ok) throw new Error(`mailpit send failed: ${res.status}`)
+}
 
 export const localAuthRoutes = new Hono<{ Variables: GatewayVariables }>()
 
@@ -107,36 +122,36 @@ localAuthRoutes.post('/api/architecture-4/local/forgot-password', async (c) => {
   const body = await c.req.json().catch(() => ({}))
   const { email } = body as { email?: string }
 
-  if (!email) {
+  if (typeof email !== 'string' || !email) {
     return c.json({ error: 'Email is required' }, 400)
   }
 
-  const token = createResetToken(email)
-  if (token) {
-    // In a production app, an email with a secure token link would be sent.
-    // In this reference demo, we output the reset link directly to backend server logs.
-    console.log(`\n======================================================`)
-    console.log(`[PASSWORD RESET] For ${email}:`)
-    console.log(`Link: http://ext.localhost:8402/architecture-4/?token=${token}`)
-    console.log(`======================================================\n`)
+  const code = createResetCode(email)
+  if (code) {
+    try {
+      await sendMail(email.trim().toLowerCase(), 'Your password reset code', `Your password reset code is: ${code}\nIt expires in 10 minutes.`)
+    } catch (err) {
+      // Logged only: a distinct error response would reveal that the account exists
+      console.error('[PASSWORD RESET] email delivery failed:', err)
+    }
   }
 
-  // Always return success message to avoid email enumeration
+  // Same response whether or not the account exists, to avoid email enumeration
   return c.json({
     ok: true,
-    message: 'If the account exists, a password reset link has been logged to the backend console.',
+    message: 'If the account exists, a 6-digit code has been emailed to it (valid 10 minutes). Check Mailpit at http://localhost:8125.',
   })
 })
 
 localAuthRoutes.post('/api/architecture-4/local/reset-password', async (c) => {
   const body = await c.req.json().catch(() => ({}))
-  const { token, newPassword } = body as { token?: string; newPassword?: string }
+  const { email, code, newPassword } = body as { email?: string; code?: string; newPassword?: string }
 
-  if (!token || !newPassword) {
-    return c.json({ error: 'Token and new password are required' }, 400)
+  if (typeof email !== 'string' || typeof code !== 'string' || typeof newPassword !== 'string' || !email || !code || !newPassword) {
+    return c.json({ error: 'Email, code and new password are required' }, 400)
   }
 
-  const result = await consumeResetToken(token, newPassword)
+  const result = await consumeResetCode(email, code, newPassword)
   if (!result.success) {
     return c.json({ error: result.error }, 400)
   }

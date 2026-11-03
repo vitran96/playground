@@ -1,14 +1,15 @@
+// @ts-nocheck
 /**
- * Frontend application logic for Architecture 4.
- * Used by: Architecture 4 (Internal: keycloak-1, External: App's own login form).
+ * Frontend application logic for Architecture 6.
+ * Used by: Architecture 6 (int.localhost:8601 -> keycloak-1, ext.localhost:8602 -> app login page + keycloak-2).
  */
 
-import { render, html } from '../shared/lib.js'
-import { getGateway, getMe } from '../shared/api.js'
-import { Layout, ExplainPanel, SessionCard, SignedOut, LoginForm } from '../shared/components.js'
-import { explain } from './explain.js'
+import { render, html } from '../shared/lib.mjs'
+import { getGateway, getMe } from '../shared/api.mjs'
+import { Layout, ExplainPanel, SessionCard, SignedOut, AppLoginPage } from '../shared/components.mjs'
+import { explain } from './explain.mjs'
 
-const ARCH = 'architecture-4'
+const ARCH = 'architecture-6'
 
 async function init() {
   const root = document.getElementById('root')
@@ -22,12 +23,7 @@ async function init() {
   function AppContent() {
     if (meRes.status === 200 && meRes.data?.user) {
       return html`
-        <${SessionCard}
-          arch=${ARCH}
-          user=${meRes.data.user}
-          claims=${meRes.data.claims}
-          onLogout=${() => init()}
-        />
+        <${SessionCard} arch=${ARCH} user=${meRes.data.user} claims=${meRes.data.claims} onLogout=${() => init()} />
         <${ExplainPanel} explain=${explain} />
       `
     }
@@ -39,21 +35,21 @@ async function init() {
       `
     }
 
-    if (gw?.loginUi === 'form') {
+    if (gw?.loginUi === 'choice') {
       return html`
-        <${LoginForm} onLoginSuccess=${() => init()} />
+        <${AppLoginPage} arch=${ARCH} />
         <${ExplainPanel} explain=${explain} />
       `
     }
 
-    // Internal gateway uses OIDC redirect
+    // Internal gateway: straight to keycloak-1, as in Architecture 3
     location.href = `/api/${ARCH}/login?next=${encodeURIComponent(location.pathname)}`
     return html`<p aria-busy="true">Redirecting to internal corporate login...</p>`
   }
 
   render(
     html`
-      <${Layout} title="Architecture 4: Two Domains with App Login" arch=${ARCH} gw=${gw}>
+      <${Layout} title="Architecture 6: Two Domains, App-Owned Registration" arch=${ARCH} gw=${gw}>
         <${AppContent} />
       <//>
     `,
