@@ -58,38 +58,6 @@
       ]
     }
   ],
-  "clientScopes": [
-    {
-      "name": "app-claims",
-      "protocol": "openid-connect",
-      "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "false"
-      },
-      "protocolMappers": [
-        {
-          "name": "roles",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "consentRequired": false,
-          "config": {
-            "claim.name": "roles",
-            "jsonType.label": "String",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "userinfo.token.claim": "true",
-            "multivalued": "true"
-          }
-        }
-      ]
-    }
-  ],
-  "defaultDefaultClientScopes": [
-    "role_list",
-    "profile",
-    "email",
-    "app-claims"
-  ],
   "clients": [
     {
       "clientId": "app-arch3-int",
@@ -108,13 +76,21 @@
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "http://int.localhost:8301/architecture-3/*##"
       },
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "email",
-        "app-claims"
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        }
       ]
     },
     {
@@ -134,13 +110,21 @@
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "http://int.localhost:8401/architecture-4/*##"
       },
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "email",
-        "app-claims"
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        }
       ]
     },
     {
@@ -160,13 +144,21 @@
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "http://localhost:8082/realms/external/*##"
       },
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "email",
-        "app-claims"
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        }
       ]
     }
   ]

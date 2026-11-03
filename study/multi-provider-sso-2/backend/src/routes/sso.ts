@@ -34,7 +34,7 @@ function safeNext(next: string | undefined, arch: string): string {
 }
 
 // Handles GET /api/:arch/login, /api/:arch/login/internal, and /api/:arch/login/external
-ssoRoutes.get('/api/:arch/login/*?', async (c) => {
+ssoRoutes.get('/api/:arch/login/:idp?', async (c) => {
   const gw = c.get('gw')
   if (!gw.oidc) {
     return c.json({ error: 'this gateway has no SSO login' }, 404)

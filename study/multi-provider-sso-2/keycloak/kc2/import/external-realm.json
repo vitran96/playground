@@ -69,13 +69,23 @@
       ]
     }
   ],
-  "clientScopes": [
+  "clients": [
     {
-      "name": "app-claims",
+      "clientId": "app-arch1",
+      "name": "Architecture 1 Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${OIDC_SECRET_APP_ARCH1}",
       "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8101/api/architecture-1/login/callback"
+      ],
       "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "false"
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8101/architecture-1/*##"
       },
       "protocolMappers": [
         {
@@ -95,7 +105,7 @@
         {
           "name": "idp",
           "protocol": "openid-connect",
-          "protocolMapper": "oidc-usersessionnote-mapper",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
           "consentRequired": false,
           "config": {
             "user.session.note": "identity_provider",
@@ -106,40 +116,6 @@
             "userinfo.token.claim": "true"
           }
         }
-      ]
-    }
-  ],
-  "defaultDefaultClientScopes": [
-    "role_list",
-    "profile",
-    "email",
-    "app-claims"
-  ],
-  "clients": [
-    {
-      "clientId": "app-arch1",
-      "name": "Architecture 1 Client",
-      "enabled": true,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "${OIDC_SECRET_APP_ARCH1}",
-      "protocol": "openid-connect",
-      "publicClient": false,
-      "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": false,
-      "redirectUris": [
-        "http://localhost:8101/api/architecture-1/login/callback"
-      ],
-      "attributes": {
-        "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:8101/architecture-1/*##"
-      },
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "email",
-        "app-claims"
       ]
     },
     {
@@ -159,13 +135,35 @@
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "http://localhost:8201/architecture-2/*##"
       },
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "email",
-        "app-claims"
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "idp",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "identity_provider",
+            "claim.name": "idp",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
       ]
     },
     {
@@ -185,13 +183,35 @@
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "http://ext.localhost:8302/architecture-3/*##"
       },
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "email",
-        "app-claims"
+      "protocolMappers": [
+        {
+          "name": "roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "idp",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "identity_provider",
+            "claim.name": "idp",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
       ]
     }
   ],
@@ -234,7 +254,7 @@
     {
       "name": "claim-to-admin-role",
       "identityProviderAlias": "internal-kc1",
-      "identityProviderMapper": "oidc-claim-to-role-idp-mapper",
+      "identityProviderMapper": "oidc-role-idp-mapper",
       "config": {
         "claim": "roles",
         "claim.value": "app-admin",

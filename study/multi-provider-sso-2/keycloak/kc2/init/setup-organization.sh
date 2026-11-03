@@ -34,10 +34,6 @@ if [ -z "${ORG_ID}" ]; then
     -o)
   ORG_ID=$(echo "${ORG_OUTPUT}" | grep '"id"' | head -n1 | tr -d '",: ' | sed 's/id//')
   echo "==> Organization created with ID: ${ORG_ID}"
-else
-  echo "==> Organization 'internal-corp' exists with ID: ${ORG_ID}. Updating domain configuration..."
-  ${KCADM} update "organizations/${ORG_ID}" -r "${REALM}" \
-    -s 'domains=[{"name":"internal.email.com","verified":true,"autoRedirect":true}]' || true
 fi
 
 echo "==> Linking identity provider 'internal-kc1' to organization '${ORG_ID}'..."
@@ -45,6 +41,12 @@ echo "==> Linking identity provider 'internal-kc1' to organization '${ORG_ID}'..
 ${KCADM} create "organizations/${ORG_ID}/identity-providers" -r "${REALM}" -b '"internal-kc1"' 2>/dev/null || {
   echo "==> (IdP link already present or verified)"
 }
+
+# autoRedirect only fires when the domain names its IdP; the IdP must be linked first
+echo "==> Binding domain 'internal.email.com' to 'internal-kc1' with auto-redirect..."
+${KCADM} update "organizations/${ORG_ID}" -r "${REALM}" \
+  -s name="internal-corp" -s alias="internal-corp" \
+  -s 'domains=[{"name":"internal.email.com","verified":true,"autoRedirect":true,"identityProviderAlias":"internal-kc1"}]'
 
 echo "==> Organization setup completed successfully."
 exit 0
