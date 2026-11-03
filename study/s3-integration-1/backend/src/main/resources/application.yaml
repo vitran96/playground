@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/playground
+    username: playground
+    password: playground
+  jpa:
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+storage:
+  endpoint: http://localhost:8333
+  bucket: playground
+  access-key: playground
+  secret-key: playground-secret

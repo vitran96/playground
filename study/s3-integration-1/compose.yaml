@@ -1,0 +1,23 @@
+services:
+  seaweedfs:
+    image: docker.io/chrislusf/seaweedfs:latest
+    command: server -dir=/data -ip.bind=0.0.0.0 -s3 -s3.config=/etc/seaweedfs/s3.json
+    ports:
+      - "8333:8333"
+      - "8888:8888"
+      - "9333:9333"
+    volumes:
+      - seaweed-data:/data
+      - ./seaweed/s3.json:/etc/seaweedfs/s3.json:ro,z
+
+  postgres:
+    image: docker.io/library/postgres:17
+    environment:
+      POSTGRES_DB: playground
+      POSTGRES_USER: playground
+      POSTGRES_PASSWORD: playground
+    ports:
+      - "5432:5432"
+
+volumes:
+  seaweed-data:
