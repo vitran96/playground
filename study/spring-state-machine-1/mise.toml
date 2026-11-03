@@ -1,0 +1,13 @@
+[tools]
+java = "21.0.2"
+maven = "3.9.16"
+node = "22.23.2"
+
+[tasks.db]
+run = "podman run -d --name cart-pg -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=cart -p 5432:5432 postgres:17"
+
+[tasks.be]
+run = "cd backend && mvn spring-boot:run"
+
+[tasks.fe]
+run = "cd frontend && npm run dev"
