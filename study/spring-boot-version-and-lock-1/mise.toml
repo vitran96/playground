@@ -1,0 +1,9 @@
+[tools]
+java = "temurin-25"
+maven = "3.9"
+
+[tasks.db]
+run = "podman run -d --name lockdb -p 5432:5432 -e POSTGRES_USER=lab -e POSTGRES_PASSWORD=lab -e POSTGRES_DB=lab docker.io/library/postgres:18"
+
+[tasks.psql]
+run = "podman exec -it lockdb psql -U lab -d lab"

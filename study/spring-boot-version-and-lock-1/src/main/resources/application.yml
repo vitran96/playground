@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lab
+    username: lab
+    password: lab
+    hikari:
+      maximum-pool-size: 20   # enough connections for concurrent tests
+  jpa:
+    hibernate:
+      ddl-auto: validate      # Flyway owns the schema, Hibernate only checks it
+    open-in-view: false
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace   # shows bound values, incl. version
